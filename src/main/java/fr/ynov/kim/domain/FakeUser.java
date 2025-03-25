@@ -2,7 +2,7 @@
 package fr.ynov.kim.domain;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+
 
 public class FakeUser extends Person {
 
@@ -51,6 +51,16 @@ public class FakeUser extends Person {
     public void setOffline() {
         connectionStatus = false;
         System.out.println(getUsername() + " went offline");
+    }
+
+    public void setTimeToNextConnection() {
+        timerUntilNextConnection.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                setOnline();
+                reply();
+            }
+        }, 20000); // set on 20sec for testing purposes
     }
 }
 
