@@ -37,6 +37,5 @@ public class Discussion {
                 System.out.println("Error - Invalid choice");
             }
         }
-        scanner.close();
     }
 }

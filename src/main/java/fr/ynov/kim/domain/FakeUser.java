@@ -59,8 +59,9 @@ public class FakeUser extends Person {
             @Override
             public void run() {
                 setOnline();
+
             }
-        }, 5000); // set on 20sec for testing purposes
+        }, 50); // set on 5sec for testing purposes
     }
 }
 

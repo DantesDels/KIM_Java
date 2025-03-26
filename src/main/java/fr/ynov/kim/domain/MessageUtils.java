@@ -82,29 +82,29 @@ public class MessageUtils {
 
 
         FakeUser Tester = new FakeUser("Tester", null, "BioTest", List.of(
-               // discussionStart,
-                // discussionPlanet,
-                discussionArhtur
+                discussionStart
+                //discussionPlanet,
+                //discussionArhtur
         ));
 
         FakeUser Amir = new FakeUser("H16h V0l7463", null, "White Grey or Black, I just wear a Hat !", List.of(
-
+                discussionArhtur
         ));
 
         FakeUser Aoi = new FakeUser("xX GLIMMER Xx", null, "On-lyne 4ever ! <3", List.of(
-
+                discussionArhtur
         ));
 
         FakeUser Arthur = new FakeUser("Broadsword", null, "Need a cup of coffee first", List.of(
-
+                discussionArhtur
         ));
 
         FakeUser Eleanor = new FakeUser("Salem", null, "Knows what you think, and yes that's a bad idea...", List.of(
-
+                discussionArhtur
         ));
 
         FakeUser Ash = new FakeUser("Xx_ShadowM4st3r_xX", null, "I play Ash, so I am Ash.", List.of(
-
+                discussionArhtur
         ));
 
         Tester.setOnline();
