@@ -27,10 +27,13 @@ public class Discussion {
         Message currentMessage = startMessage;
         while(!currentMessage.getReplies().isEmpty()) {
             int choice = scanner.nextInt();
+            if (choice == -1) {
+                return;
+            }
             try {
                 if (currentMessage.getReplies().get(choice - 1) != null) {
                     currentMessage = currentMessage.getReplies().get(choice - 1);
-                    System.out.println("Chosen message is " + currentMessage.getMsg());
+                    System.out.println(currentMessage.getMsg());
                     this.displayReplies(currentMessage);
                 }
             } catch (IndexOutOfBoundsException e) {
