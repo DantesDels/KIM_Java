@@ -21,14 +21,9 @@ public class Application {
 
         List<FakeUser> fakeUsers = MessageUtils.initiliazeUser();
 
-        int i = 0;
-
         Map<FakeUser, Discussion> history = new HashMap<>();
         for (FakeUser fakeUser : fakeUsers) {
             history.put(fakeUser, fakeUser.getScript().get((int) (Math.random() * fakeUser.getScript().size())));
-
-            System.out.println(i + " : " + fakeUser.getUsername() + "\n" + history.get(fakeUser).startMessage.getMsg());
-            i++;
         }
 
         int fakeUserId = 0;
@@ -36,6 +31,11 @@ public class Application {
 
         while (fakeUserId != -1) {
             try {
+                int i = 0;
+                for(FakeUser fakeUser : fakeUsers) {
+                    System.out.println(i + " : " + fakeUser.getUsername() + "\n" + history.get(fakeUser).startMessage.getMsg());
+                    i++;
+                }
                 fakeUserId = scanDiscussion.nextInt();
                 Discussion d = history.get(fakeUsers.get(fakeUserId));
                 d.start();
