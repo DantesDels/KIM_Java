@@ -60,7 +60,7 @@ public class FakeUser extends Person {
             public void run() {
                 setOnline();
             }
-        }, 5000); // set on 20sec for testing purposes
+        }, 5000); // set on 5sec for testing purposes
     }
 }
 
