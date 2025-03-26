@@ -11,7 +11,7 @@ public class User extends Person {
 
     public void setUsername() {
         Scanner scanUsername = new Scanner(System.in);
-        System.out.println("Set Username: ");;
+        System.out.println("Set Username: ");
         this.username = scanUsername.nextLine() ;
     }
 
