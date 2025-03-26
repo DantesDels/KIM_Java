@@ -2,13 +2,13 @@ package fr.ynov.kim.domain;
 
 public abstract class Person {
 
-    private String username;
-    private String profilPicture;
-    private String msgBio;
+    String username;
+    String profilePicture;
+    String msgBio;
 
-    public Person (String username, String profilPicture, String msgBio) {
+    public Person (String username, String profilePicture, String msgBio) {
         this.username = username;
-        this.profilPicture = profilPicture;
+        this.profilePicture = profilePicture;
         this.msgBio = msgBio;
     }
 
@@ -16,23 +16,11 @@ public abstract class Person {
         return username;
     }
 
-    public String getProfilPicture() {
-        return profilPicture;
+    public String getProfilePicture() {
+        return profilePicture;
     }
 
     public String getMsgBio() {
         return msgBio;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setProfilPicture(String profilPicture) {
-        this.profilPicture = profilPicture;
-    }
-
-    public void setMsgBio(String msgBio) {
-        this.msgBio = msgBio;
     }
 }
