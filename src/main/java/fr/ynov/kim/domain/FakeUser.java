@@ -15,6 +15,7 @@ public class FakeUser extends Person {
 
         this.script = script;
         this.connectionStatus = true;
+        this.timerUntilNextConnection = new Timer();
     }
 
     public void setOnline () {
@@ -58,9 +59,8 @@ public class FakeUser extends Person {
             @Override
             public void run() {
                 setOnline();
-                reply();
             }
-        }, 20000); // set on 20sec for testing purposes
+        }, 5000); // set on 20sec for testing purposes
     }
 }
 
