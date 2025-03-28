@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-
 public class KimGUI extends JFrame {
 
     public static void main(String[] args) {
@@ -33,6 +32,9 @@ public class KimGUI extends JFrame {
         frame.setSize(400, 600);
         frame.setLayout(new BorderLayout());
 
+        Font usernameFont = new Font("Old Roboto", Font.BOLD, 14);
+        Font messageFont = new Font("Arial", Font.PLAIN, 12);
+
         // Top Panel (Profile and Username)
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -45,10 +47,11 @@ public class KimGUI extends JFrame {
         profilePanel.add(profilePic);
         topPanel.add(profilePanel, BorderLayout.WEST);
 
-        // Username Input with Placeholder
-        JPanel usernamePanel = new JPanel(new GridLayout(2, 1));
+        // Username Panel
+        JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        usernamePanel.setBorder(BorderFactory.createEmptyBorder(17, 5, 0, 0)); // Adjust spacing
         JLabel usernameLabel = new JLabel("USERNAME : " + username);
-
+        usernameLabel.setFont(usernameFont);
         usernamePanel.add(usernameLabel);
         topPanel.add(usernamePanel, BorderLayout.CENTER);
 
@@ -64,13 +67,13 @@ public class KimGUI extends JFrame {
 
         // Sample contacts
         for (int i = 0; i < 10; i++) {
-            contactsPanel.add(createContactPanel("WarframeDEFAULT0", "Hello, this is a long message that might be truncated..."));
+            contactsPanel.add(createContactPanel("WarframeDEFAULT0", "Hello, this is a long message that might be truncated...", usernameFont, messageFont));
         }
 
         frame.setVisible(true);
     }
 
-    private static JPanel createContactPanel(String username, String lastMessage) {
+    private static JPanel createContactPanel(String username, String lastMessage, Font usernameFont, Font messageFont) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
@@ -80,10 +83,13 @@ public class KimGUI extends JFrame {
         JLabel profilePic = new JLabel(icon);
         panel.add(profilePic, BorderLayout.WEST);
 
-        // Text Info
+        // Text Info with spacing
         JPanel textPanel = new JPanel(new GridLayout(2, 1));
+        textPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0)); // Offset X for spacing
         JLabel usernameLabel = new JLabel(username);
+        usernameLabel.setFont(usernameFont);
         JLabel messageLabel = new JLabel("<html><body style='width:150px;'>" + lastMessage + "</body></html>");
+        messageLabel.setFont(messageFont);
         textPanel.add(usernameLabel);
         textPanel.add(messageLabel);
         panel.add(textPanel, BorderLayout.CENTER);
