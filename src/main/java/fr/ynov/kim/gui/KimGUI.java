@@ -96,23 +96,35 @@ public class KimGUI extends JFrame {
 
     private static JPanel createContactPanel(String username, String lastMessage, Font usernameFont, Font messageFont) {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Réduction de l'espace global
 
-        // Profile Pic
+        // Profile Pic avec Border pour meilleure alignement
         ImageIcon icon = new ImageIcon("res/img/" + username + ".png");
         icon.setImage(icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         JLabel profilePic = new JLabel(icon);
+        profilePic.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0)); // Ajout d'un padding pour alignement
         panel.add(profilePic, BorderLayout.WEST);
 
-        // Text Info with spacing
-        JPanel textPanel = new JPanel(new GridLayout(2, 1));
-        textPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0)); // Offset X for spacing
+        // Text Info Panel (Better Spacing)
+        JPanel textPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.WEST; // Alignement gauche
+
+        // Username Label
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, -60, 0, 0); // Réduction de l'espace à gauche
         JLabel usernameLabel = new JLabel(username);
         usernameLabel.setFont(usernameFont);
+        textPanel.add(usernameLabel, gbc);
+
+        // Message Label
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, -50, 0, 0); // Réduction de l'espace entre username et message
         JLabel messageLabel = new JLabel("<html><body style='width:150px;'>" + lastMessage + "</body></html>");
         messageLabel.setFont(messageFont);
-        textPanel.add(usernameLabel);
-        textPanel.add(messageLabel);
+        textPanel.add(messageLabel, gbc);
+
         panel.add(textPanel, BorderLayout.CENTER);
 
         return panel;
