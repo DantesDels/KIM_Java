@@ -83,37 +83,32 @@ public class MessageUtils {
         Discussion discussionArhtur = new Discussion("Drifter.", convoStart);
 
 
-        FakeUser Tester = new FakeUser("Tester", null, "BioTest", List.of(
-                discussionStart
-                //discussionPlanet,
-                //discussionArhtur
-        ));
 
-        FakeUser Amir = new FakeUser("H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", List.of(
+        FakeUser Amir = new FakeUser("Amir", "H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", List.of(
                 discussionArhtur
         ));
 
-        FakeUser Aoi = new FakeUser("xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
-                discussionArhtur
-        ));
-
-        FakeUser Arthur = new FakeUser("Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
-                discussionArhtur
-        ));
-
-        FakeUser Eleanor = new FakeUser("Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
+        FakeUser Aoi = new FakeUser("Aoi","xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
                 discussionArhtur
         ));
 
 
-        Tester.setOnline();
+        FakeUser Arthur = new FakeUser("Arthur","Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
+
+                discussionArhtur
+        ));
+
+        FakeUser Eleanor = new FakeUser("Eleanor","Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
+                discussionArhtur
+        ));
+
+
         Amir.setOnline();
         Aoi.setOnline();
         Arthur.setOnline();
         Eleanor.setOnline();
 
         return List.of(
-                Tester,
                 Amir,
                 Aoi,
                 Arthur,

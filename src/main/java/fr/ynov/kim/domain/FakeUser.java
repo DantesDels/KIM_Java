@@ -9,15 +9,23 @@ import java.util.Timer;
 public class FakeUser extends Person {
 
     private boolean connectionStatus;
+    private String pseudo ;
     private List<Discussion> script;
     private Timer timerUntilNextConnection;
+    private ImageIcon profilePicture;
 
-    public FakeUser(String username, ImageIcon profilPicture, String msgBio, List<Discussion> script) {
-        super(username, profilPicture, msgBio);
+    public FakeUser(String username, String pseudo, ImageIcon profilePicture, String msgBio, List<Discussion> script) {
+        super(username, profilePicture, msgBio);
 
+        this.profilePicture = profilePicture;
         this.script = script;
         this.connectionStatus = true;
         this.timerUntilNextConnection = new Timer();
+        this.pseudo = pseudo ;
+    }
+
+    public String getPseudo() {
+        return this.pseudo;
     }
 
     public void setOnline () {
@@ -45,6 +53,10 @@ public class FakeUser extends Person {
                 }
             }, timeBetweenMessages);
         }
+    }
+
+    public ImageIcon getProfilePicture() {
+        return this.profilePicture;
     }
 
     private void displayTypingEffect() {

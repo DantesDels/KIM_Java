@@ -1,15 +1,20 @@
 package fr.ynov.kim.gui;
 
+import fr.ynov.kim.domain.FakeUser;
+import fr.ynov.kim.domain.MessageUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class KimGUI extends JFrame {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(KimGUI::createAndShowGUI);
+        List<FakeUser> fakeUsers = MessageUtils.initiliazeUser();
+        SwingUtilities.invokeLater(() -> createAndShowGUI(fakeUsers));
     }
 
     private static Font loadCustomFont(String path, float size) {
@@ -33,7 +38,7 @@ public class KimGUI extends JFrame {
         return username.trim();
     }
 
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI(List<FakeUser> fakeUsers) {
 
         String username = askUsername(JOptionPane.QUESTION_MESSAGE);
         ImageIcon frameIcon = new ImageIcon("res/img/KIMChat.png");
@@ -43,6 +48,7 @@ public class KimGUI extends JFrame {
         frame.setSize(400, 600);
         frame.setLayout(new BorderLayout());
         frame.setIconImage(frameIcon.getImage());
+        frame.setResizable(false);
 
         // Load custom font
         Font customFont = loadCustomFont("res/fonts/VCR_OSD_MONO_1.001.ttf", 14f);
@@ -51,17 +57,17 @@ public class KimGUI extends JFrame {
         Font usernameFont = customFont.deriveFont(Font.BOLD, 14f);
         Font messageFont = new Font("Comic Sans MS", Font.PLAIN, 12);
 
-        // Top Panel (your Profil and Username)
+        // Top Panel (your Profile and Username)
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Profil Picture Panel
-        JPanel profilPanel = new JPanel();
+        // Profile Picture Panel
+        JPanel profilePanel = new JPanel();
         ImageIcon icon = new ImageIcon("res/img/WarframeDEFAULT.png");
         icon.setImage(icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        JLabel profilPic = new JLabel(icon);
-        profilPanel.add(profilPic);
-        topPanel.add(profilPanel, BorderLayout.WEST);
+        JLabel profilePic = new JLabel(icon);
+        profilePanel.add(profilePic);
+        topPanel.add(profilePanel, BorderLayout.WEST);
 
         // Username Panel
         JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -80,29 +86,31 @@ public class KimGUI extends JFrame {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         frame.add(scrollPane, BorderLayout.CENTER);
 
-        // Sample contacts
-        for (int i = 0; i < 10; i++) {
+        // Display fake users
+        for (FakeUser fakeUser : fakeUsers) {
             contactsPanel.add(createContactPanel(
-                    "WarframeDEFAULT0",
-                    "Hello, this is a long message that might be truncated...",
+                    fakeUser.getUsername(),
+                    fakeUser.getPseudo(),
+                    fakeUser.getScript().get(0).startMessage.getMsg(),
                     usernameFont,
-                    messageFont
-            ));
+                    messageFont,
+                    fakeUser.getProfilePicture()
+                    ));
         }
         frame.setVisible(true);
     }
 
-    private static JPanel createContactPanel(String username, String lastMessage, Font usernameFont, Font messageFont) {
+    private static JPanel createContactPanel(String username, String pseudo, String lastMessage, Font usernameFont, Font messageFont, ImageIcon profileIcon) {
+
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         ImageIcon iconFrame = new ImageIcon("res/img/KIMChat.png");
 
-        // ProfilPic
-        ImageIcon icon = new ImageIcon("res/img/" + username + ".png");
-        icon.setImage(icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        JLabel profilPic = new JLabel(icon);
-        profilPic.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
-        panel.add(profilPic, BorderLayout.WEST);
+        // ProfilePic
+        profileIcon.setImage(profileIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+        JLabel profilePic = new JLabel(profileIcon);
+        profilePic.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        panel.add(profilePic, BorderLayout.WEST);
 
         // Text Info Panel
         JPanel textPanel = new JPanel(new GridBagLayout());
@@ -113,7 +121,7 @@ public class KimGUI extends JFrame {
         // Username Label
         gbc.gridy = 0;
         gbc.insets = new Insets(0, -60, 0, 0);
-        JLabel usernameLabel = new JLabel(username);
+        JLabel usernameLabel = new JLabel(pseudo);
         usernameLabel.setFont(usernameFont);
         textPanel.add(usernameLabel, gbc);
 
@@ -123,7 +131,7 @@ public class KimGUI extends JFrame {
         JLabel messageLabel = new JLabel(
                 "<html><body style='width:150px;'>"
                         + lastMessage +
-                "</body></html>");
+                        "</body></html>");
         messageLabel.setFont(messageFont);
         textPanel.add(messageLabel, gbc);
         messageLabel.addMouseListener(new MouseAdapter() {
@@ -145,7 +153,8 @@ public class KimGUI extends JFrame {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
 
-                    JFrame chatFrame = new JFrame(username);
+                    JFrame chatFrame = new JFrame(pseudo);
+                    // chatFrame.setFont(usernameFont); doesn't apply
                     chatFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     chatFrame.setIconImage(iconFrame.getImage());
                     chatFrame.setSize(950, 600);
@@ -158,23 +167,23 @@ public class KimGUI extends JFrame {
                     gbc.fill = GridBagConstraints.BOTH;
                     gbc2.fill = GridBagConstraints.HORIZONTAL;
                     gbc.insets = new Insets(5, 5, 5, 5);
-                    gbc2.insets = new Insets(0, 10, 0, 5 );
+                    gbc2.insets = new Insets(0, 25, 0, 25);
 
 
-                    // Contact Profil
-                    ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");
+                    // Contact Profile
+                    ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");;
                     iconContact.setImage(iconContact.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
-                    JLabel profilPicContact = new JLabel(iconContact);
+                    JLabel profilePicContact = new JLabel(iconContact);
                     gbc.gridx = 0;
                     gbc.gridy = 0;
                     gbc.weightx = 0.3;
                     gbc.weighty = 0;
-                    chatFrame.add(profilPicContact, gbc);
+                    chatFrame.add(profilePicContact, gbc);
 
                     // Contact Button
-                    JButton profilButton = new JButton(" PROFILE ");
-                    profilButton.setFont(messageFont);
-                    profilButton.addActionListener(new ActionListener(){
+                    JButton profileButton = new JButton(" PROFILE ");
+                    profileButton.setFont(messageFont);
+                    profileButton.addActionListener(new ActionListener(){
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             // TO DO : newFrame that shows bioMsg of fakeUser
@@ -182,7 +191,7 @@ public class KimGUI extends JFrame {
                     });
                     gbc2.gridx = 0;
                     gbc2.gridy = 1;
-                    chatFrame.add(profilButton, gbc2);
+                    chatFrame.add(profileButton, gbc2);
 
 
                     // chatArea
@@ -196,15 +205,15 @@ public class KimGUI extends JFrame {
                     gbc.weighty = 1;
                     chatFrame.add(chatScroll, gbc);
 
-                    // User Profil
+                    // User Profile
                     ImageIcon iconUser = new ImageIcon("res/img/WarframeDEFAULT.png");
                     iconUser.setImage(iconUser.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
-                    JLabel profilPicUser = new JLabel(iconUser);
+                    JLabel profilePicUser = new JLabel(iconUser);
                     gbc.gridx = 0;
                     gbc.gridy = 3;
                     gbc.weightx = 0.3;
                     gbc.weighty = 0;
-                    chatFrame.add(profilPicUser, gbc);
+                    chatFrame.add(profilePicUser, gbc);
 
                     // reply Area
                     JPanel ReplyArea = new JPanel();

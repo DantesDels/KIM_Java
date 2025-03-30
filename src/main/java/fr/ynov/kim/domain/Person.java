@@ -6,12 +6,12 @@ import java.awt.*;
 public abstract class Person {
 
     String username;
-    ImageIcon profilPicture;
+    ImageIcon profilePicture;
     String msgBio;
 
-    public Person (String username, ImageIcon profilPicture, String msgBio) {
+    public Person (String username, ImageIcon profilePicture, String msgBio) {
         this.username = username;
-        this.profilPicture = profilPicture;
+        this.profilePicture = profilePicture;
         this.msgBio = msgBio;
     }
 
@@ -19,8 +19,8 @@ public abstract class Person {
         return username;
     }
 
-    public ImageIcon getProfilPicture() {
-        return profilPicture;
+    public ImageIcon getProfilePicture() {
+        return profilePicture;
     }
 
     public String getMsgBio() {
