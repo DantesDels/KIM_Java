@@ -154,8 +154,12 @@ public class KimGUI extends JFrame {
                     chatFrame.setVisible(true);
 
                     GridBagConstraints gbc = new GridBagConstraints();
+                    GridBagConstraints gbc2 = new GridBagConstraints();
                     gbc.fill = GridBagConstraints.BOTH;
+                    gbc2.fill = GridBagConstraints.HORIZONTAL;
                     gbc.insets = new Insets(5, 5, 5, 5);
+                    gbc2.insets = new Insets(0, 10, 0, 5 );
+
 
                     // Contact Profil
                     ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");
@@ -167,14 +171,27 @@ public class KimGUI extends JFrame {
                     gbc.weighty = 0;
                     chatFrame.add(profilPicContact, gbc);
 
+                    // Contact Button
+                    JButton profilButton = new JButton(" PROFILE ");
+                    profilButton.setFont(messageFont);
+                    profilButton.addActionListener(new ActionListener(){
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            // TO DO : newFrame that shows bioMsg of fakeUser
+                        }
+                    });
+                    gbc2.gridx = 0;
+                    gbc2.gridy = 1;
+                    chatFrame.add(profilButton, gbc2);
+
+
                     // chatArea
                     JPanel chatArea = new JPanel();
                     chatArea.setAutoscrolls(true);
-
                     JScrollPane chatScroll = new JScrollPane(chatArea);
                     gbc.gridx = 1;
                     gbc.gridy = 0;
-                    gbc.gridheight = 2;
+                    gbc.gridheight = 3;
                     gbc.weightx = 6;
                     gbc.weighty = 1;
                     chatFrame.add(chatScroll, gbc);
