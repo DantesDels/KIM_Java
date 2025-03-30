@@ -95,6 +95,7 @@ public class KimGUI extends JFrame {
     private static JPanel createContactPanel(String username, String lastMessage, Font usernameFont, Font messageFont) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        ImageIcon iconFrame = new ImageIcon("res/img/KIMChat.png");
 
         // ProfilPic
         ImageIcon icon = new ImageIcon("res/img/" + username + ".png");
@@ -130,7 +131,7 @@ public class KimGUI extends JFrame {
             public void mousePressed (MouseEvent e) {
                 super.mousePressed(e);
                 if (e.getClickCount() == 1){
-                    Font messageFont2 = new Font("Comic Sans MS", Font.ITALIC, 12);
+                    Font messageFont2 = new Font("Comic Sans MS", Font.BOLD, 11);
                     messageLabel.setFont(messageFont2);
                 }
             }
@@ -145,16 +146,18 @@ public class KimGUI extends JFrame {
                 if (e.getClickCount() == 2) {
 
                     JFrame chatFrame = new JFrame(username);
+                    chatFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    chatFrame.setIconImage(iconFrame.getImage());
                     chatFrame.setSize(950, 600);
                     chatFrame.setLocationRelativeTo(null);
-                    chatFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     chatFrame.setLayout(new GridBagLayout());
                     chatFrame.setVisible(true);
 
                     GridBagConstraints gbc = new GridBagConstraints();
                     gbc.fill = GridBagConstraints.BOTH;
+                    gbc.insets = new Insets(5, 5, 5, 5);
 
-                    // Contact Config
+                    // Contact Profil
                     ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");
                     iconContact.setImage(iconContact.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
                     JLabel profilPicContact = new JLabel(iconContact);
@@ -167,29 +170,30 @@ public class KimGUI extends JFrame {
                     // chatArea
                     JPanel chatArea = new JPanel();
                     chatArea.setAutoscrolls(true);
-                    chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
+
                     JScrollPane chatScroll = new JScrollPane(chatArea);
                     gbc.gridx = 1;
                     gbc.gridy = 0;
+                    gbc.gridheight = 2;
                     gbc.weightx = 6;
-                    gbc.weighty = 6;
+                    gbc.weighty = 1;
                     chatFrame.add(chatScroll, gbc);
 
-                    // User Config
+                    // User Profil
                     ImageIcon iconUser = new ImageIcon("res/img/WarframeDEFAULT.png");
                     iconUser.setImage(iconUser.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
                     JLabel profilPicUser = new JLabel(iconUser);
                     gbc.gridx = 0;
-                    gbc.gridy = 1;
+                    gbc.gridy = 3;
                     gbc.weightx = 0.3;
-                    gbc.weighty = 0.1;
+                    gbc.weighty = 0;
                     chatFrame.add(profilPicUser, gbc);
 
-                    // User Responses
+                    // reply Area
                     JPanel ReplyArea = new JPanel();
                     JScrollPane ReplyScroll = new JScrollPane(ReplyArea);
                     gbc.gridx = 1;
-                    gbc.gridy = 1;
+                    gbc.gridy = 3;
                     gbc.weightx = 6;
                     gbc.weighty = 0;
                     chatFrame.add(ReplyScroll, gbc);
