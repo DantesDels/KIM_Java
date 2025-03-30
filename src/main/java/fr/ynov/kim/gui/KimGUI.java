@@ -70,11 +70,24 @@ public class KimGUI extends JFrame {
         topPanel.add(profilePanel, BorderLayout.WEST);
 
         // Username Panel
-        JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        usernamePanel.setBorder(BorderFactory.createEmptyBorder(17, 5, 0, 0));
-        JLabel usernameLabel = new JLabel("USERNAME : " + username);
-        usernameLabel.setFont(usernameFont);
-        usernamePanel.add(usernameLabel);
+        JPanel usernamePanel = new JPanel(new GridBagLayout());
+        usernamePanel.setBorder(BorderFactory.createEmptyBorder(0, -200, 0, 0));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        // Ajouter usernameLabel
+        gbc.gridy = 0;
+        JLabel usernameLabel = new JLabel("USERNAME : ");
+        usernameLabel.setFont(messageFont);
+        usernamePanel.add(usernameLabel, gbc);
+
+        // Ajouter userNameLabel
+        gbc.gridy = 1;
+        JLabel userNameLabel = new JLabel(username);
+        userNameLabel.setFont(usernameFont);
+        usernamePanel.add(userNameLabel, gbc);
+
         topPanel.add(usernamePanel, BorderLayout.CENTER);
 
         frame.add(topPanel, BorderLayout.NORTH);
@@ -95,7 +108,7 @@ public class KimGUI extends JFrame {
                     usernameFont,
                     messageFont,
                     fakeUser.getProfilePicture()
-                    ));
+            ));
         }
         frame.setVisible(true);
     }
