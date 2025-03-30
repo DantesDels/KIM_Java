@@ -25,7 +25,7 @@ public class KimGUI extends JFrame {
     static String askUsername(int iconType) {
         String username = JOptionPane.showInputDialog(null,
                 "USERNAME:",
-                "Welcome to Kim !",
+                "Kinemantik Instant Messenger",
                 iconType);
         if (username.trim().isEmpty()) {
             username = askUsername(JOptionPane.ERROR_MESSAGE);
@@ -38,7 +38,7 @@ public class KimGUI extends JFrame {
         String username = askUsername(JOptionPane.QUESTION_MESSAGE);
         ImageIcon frameIcon = new ImageIcon("res/img/KIMChat.png");
 
-        JFrame frame = new JFrame("Chat Interface");
+        JFrame frame = new JFrame("Welcome to KIM!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 600);
         frame.setLayout(new BorderLayout());
@@ -59,7 +59,7 @@ public class KimGUI extends JFrame {
         JPanel profilPanel = new JPanel();
         ImageIcon icon = new ImageIcon("res/img/WarframeDEFAULT.png");
         icon.setImage(icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        JLabel profilPic = new JLabel(icon); // Placeholder image
+        JLabel profilPic = new JLabel(icon);
         profilPanel.add(profilPic);
         topPanel.add(profilPanel, BorderLayout.WEST);
 
@@ -76,7 +76,6 @@ public class KimGUI extends JFrame {
         // Contacts Panel
         JPanel contactsPanel = new JPanel();
         contactsPanel.setLayout(new BoxLayout(contactsPanel, BoxLayout.Y_AXIS));
-
         JScrollPane scrollPane = new JScrollPane(contactsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         frame.add(scrollPane, BorderLayout.CENTER);
@@ -84,12 +83,12 @@ public class KimGUI extends JFrame {
         // Sample contacts
         for (int i = 0; i < 10; i++) {
             contactsPanel.add(createContactPanel(
-                    "WarframeDEFAULT0", "Hello, this is a long message that might be truncated...",
+                    "WarframeDEFAULT0",
+                    "Hello, this is a long message that might be truncated...",
                     usernameFont,
                     messageFont
             ));
         }
-
         frame.setVisible(true);
     }
 
@@ -120,7 +119,10 @@ public class KimGUI extends JFrame {
         // Message Label
         gbc.gridy = 1;
         gbc.insets = new Insets(0, -50, 0, 0);
-        JLabel messageLabel = new JLabel("<html><body style='width:150px;'>" + lastMessage + "</body></html>");
+        JLabel messageLabel = new JLabel(
+                "<html><body style='width:150px;'>"
+                        + lastMessage +
+                "</body></html>");
         messageLabel.setFont(messageFont);
         textPanel.add(messageLabel, gbc);
         messageLabel.addMouseListener(new MouseAdapter() {
@@ -141,10 +143,56 @@ public class KimGUI extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
-                    JFrame chatFrame = new JFrame("Chat with " + username);
-                    chatFrame.setVisible(true);
+
+                    JFrame chatFrame = new JFrame(username);
+                    chatFrame.setSize(950, 600);
+                    chatFrame.setLocationRelativeTo(null);
                     chatFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    chatFrame.setSize(800, 600);
+                    chatFrame.setLayout(new GridBagLayout());
+                    chatFrame.setVisible(true);
+
+                    GridBagConstraints gbc = new GridBagConstraints();
+                    gbc.fill = GridBagConstraints.BOTH;
+
+                    // Contact Config
+                    ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");
+                    iconContact.setImage(iconContact.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+                    JLabel profilPicContact = new JLabel(iconContact);
+                    gbc.gridx = 0;
+                    gbc.gridy = 0;
+                    gbc.weightx = 0.3;
+                    gbc.weighty = 0;
+                    chatFrame.add(profilPicContact, gbc);
+
+                    // chatArea
+                    JPanel chatArea = new JPanel();
+                    chatArea.setAutoscrolls(true);
+                    chatArea.setLayout(new BoxLayout(chatArea, BoxLayout.Y_AXIS));
+                    JScrollPane chatScroll = new JScrollPane(chatArea);
+                    gbc.gridx = 1;
+                    gbc.gridy = 0;
+                    gbc.weightx = 6;
+                    gbc.weighty = 6;
+                    chatFrame.add(chatScroll, gbc);
+
+                    // User Config
+                    ImageIcon iconUser = new ImageIcon("res/img/WarframeDEFAULT.png");
+                    iconUser.setImage(iconUser.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
+                    JLabel profilPicUser = new JLabel(iconUser);
+                    gbc.gridx = 0;
+                    gbc.gridy = 1;
+                    gbc.weightx = 0.3;
+                    gbc.weighty = 0.1;
+                    chatFrame.add(profilPicUser, gbc);
+
+                    // User Responses
+                    JPanel ReplyArea = new JPanel();
+                    JScrollPane ReplyScroll = new JScrollPane(ReplyArea);
+                    gbc.gridx = 1;
+                    gbc.gridy = 1;
+                    gbc.weightx = 6;
+                    gbc.weighty = 0;
+                    chatFrame.add(ReplyScroll, gbc);
                 }
             }
         });
