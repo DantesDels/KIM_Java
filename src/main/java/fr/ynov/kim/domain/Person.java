@@ -3,12 +3,12 @@ package fr.ynov.kim.domain;
 public abstract class Person {
 
     String username;
-    String profilePicture;
+    String profilPicture;
     String msgBio;
 
-    public Person (String username, String profilePicture, String msgBio) {
+    public Person (String username, String profilPicture, String msgBio) {
         this.username = username;
-        this.profilePicture = profilePicture;
+        this.profilPicture = profilPicture;
         this.msgBio = msgBio;
     }
 
@@ -16,8 +16,8 @@ public abstract class Person {
         return username;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
+    public String getProfilPicture() {
+        return profilPicture;
     }
 
     public String getMsgBio() {

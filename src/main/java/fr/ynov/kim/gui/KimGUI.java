@@ -2,10 +2,7 @@ package fr.ynov.kim.gui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -21,7 +18,7 @@ public class KimGUI extends JFrame {
             return font.deriveFont(size);
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
-            return new Font("Arial", Font.PLAIN, (int) size); // Fallback to Arial if loading fails
+            return new Font("Arial", Font.PLAIN, (int) size);
         }
     }
 
@@ -39,11 +36,13 @@ public class KimGUI extends JFrame {
     private static void createAndShowGUI() {
 
         String username = askUsername(JOptionPane.QUESTION_MESSAGE);
+        ImageIcon frameIcon = new ImageIcon("res/img/KIMChat.png");
 
         JFrame frame = new JFrame("Chat Interface");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 600);
         frame.setLayout(new BorderLayout());
+        frame.setIconImage(frameIcon.getImage());
 
         // Load custom font
         Font customFont = loadCustomFont("res/fonts/VCR_OSD_MONO_1.001.ttf", 14f);
@@ -52,21 +51,21 @@ public class KimGUI extends JFrame {
         Font usernameFont = customFont.deriveFont(Font.BOLD, 14f);
         Font messageFont = new Font("Comic Sans MS", Font.PLAIN, 12);
 
-        // Top Panel (your Profile and Username)
+        // Top Panel (your Profil and Username)
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Profile Picture Panel
-        JPanel profilePanel = new JPanel();
+        // Profil Picture Panel
+        JPanel profilPanel = new JPanel();
         ImageIcon icon = new ImageIcon("res/img/WarframeDEFAULT.png");
         icon.setImage(icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        JLabel profilePic = new JLabel(icon); // Placeholder image
-        profilePanel.add(profilePic);
-        topPanel.add(profilePanel, BorderLayout.WEST);
+        JLabel profilPic = new JLabel(icon); // Placeholder image
+        profilPanel.add(profilPic);
+        topPanel.add(profilPanel, BorderLayout.WEST);
 
         // Username Panel
         JPanel usernamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        usernamePanel.setBorder(BorderFactory.createEmptyBorder(17, 5, 0, 0)); // Adjust spacing
+        usernamePanel.setBorder(BorderFactory.createEmptyBorder(17, 5, 0, 0));
         JLabel usernameLabel = new JLabel("USERNAME : " + username);
         usernameLabel.setFont(usernameFont);
         usernamePanel.add(usernameLabel);
@@ -96,34 +95,59 @@ public class KimGUI extends JFrame {
 
     private static JPanel createContactPanel(String username, String lastMessage, Font usernameFont, Font messageFont) {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Réduction de l'espace global
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // Profile Pic avec Border pour meilleure alignement
+        // ProfilPic
         ImageIcon icon = new ImageIcon("res/img/" + username + ".png");
         icon.setImage(icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        JLabel profilePic = new JLabel(icon);
-        profilePic.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0)); // Ajout d'un padding pour alignement
-        panel.add(profilePic, BorderLayout.WEST);
+        JLabel profilPic = new JLabel(icon);
+        profilPic.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 0));
+        panel.add(profilPic, BorderLayout.WEST);
 
-        // Text Info Panel (Better Spacing)
+        // Text Info Panel
         JPanel textPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.anchor = GridBagConstraints.WEST; // Alignement gauche
+        gbc.anchor = GridBagConstraints.WEST;
 
         // Username Label
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, -60, 0, 0); // Réduction de l'espace à gauche
+        gbc.insets = new Insets(0, -60, 0, 0);
         JLabel usernameLabel = new JLabel(username);
         usernameLabel.setFont(usernameFont);
         textPanel.add(usernameLabel, gbc);
 
         // Message Label
         gbc.gridy = 1;
-        gbc.insets = new Insets(0, -50, 0, 0); // Réduction de l'espace entre username et message
+        gbc.insets = new Insets(0, -50, 0, 0);
         JLabel messageLabel = new JLabel("<html><body style='width:150px;'>" + lastMessage + "</body></html>");
         messageLabel.setFont(messageFont);
         textPanel.add(messageLabel, gbc);
+        messageLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed (MouseEvent e) {
+                super.mousePressed(e);
+                if (e.getClickCount() == 1){
+                    Font messageFont2 = new Font("Comic Sans MS", Font.ITALIC, 12);
+                    messageLabel.setFont(messageFont2);
+                }
+            }
+            public void mouseReleased (MouseEvent e) {
+                super.mouseReleased(e);
+                if (e.getClickCount() == 1){
+                    messageLabel.setFont(messageFont);
+                }
+            }
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (e.getClickCount() == 2) {
+                    JFrame chatFrame = new JFrame("Chat with " + username);
+                    chatFrame.setVisible(true);
+                    chatFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    chatFrame.setSize(800, 600);
+                }
+            }
+        });
 
         panel.add(textPanel, BorderLayout.CENTER);
 

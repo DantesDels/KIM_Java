@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public class User extends Person {
 
-    public User(String username, String profilePicture, String msgBio) {
-        super(username, profilePicture, msgBio);
+    public User(String username, String profilPicture, String msgBio) {
+        super(username, profilPicture, msgBio);
 
     }
 
@@ -15,11 +15,11 @@ public class User extends Person {
         this.username = scanUsername.nextLine() ;
     }
 
-    public void setProfilePicture(String profilePicture) {
-        Scanner scanProfilePicture = new Scanner(System.in);
-        // Display all ProfilePictures
-        System.out.println("Choose your ProfilePicture: ");
-        this.profilePicture = scanProfilePicture.nextLine();
+    public void setProfilPicture(String profilPicture) {
+        Scanner scanProfilPicture = new Scanner(System.in);
+        // Display all ProfilPictures
+        System.out.println("Choose your ProfilPicture: ");
+        this.profilPicture = scanProfilPicture.nextLine();
     }
 
     public void setMsgBio() {
