@@ -95,21 +95,25 @@ public class KimGUI extends JFrame {
         // Contacts Panel
         JPanel contactsPanel = new JPanel();
         contactsPanel.setLayout(new BoxLayout(contactsPanel, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(contactsPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        frame.add(scrollPane, BorderLayout.CENTER);
 
-        // Display fake users
+        // Display fake users with independent spacing
         for (FakeUser fakeUser : fakeUsers) {
-            contactsPanel.add(createContactPanel(
+            JPanel contactPanel = createContactPanel(
                     fakeUser.getUsername(),
                     fakeUser.getPseudo(),
                     fakeUser.getScript().get(0).startMessage.getMsg(),
                     usernameFont,
                     messageFont,
                     fakeUser.getProfilePicture()
-            ));
+            );
+            contactPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+            contactsPanel.add(contactPanel);
         }
+
+        JScrollPane scrollPane = new JScrollPane(contactsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        frame.add(scrollPane, BorderLayout.CENTER);
+
         frame.setVisible(true);
     }
 
