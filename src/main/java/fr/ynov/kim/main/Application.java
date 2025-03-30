@@ -15,7 +15,7 @@ public class Application {
 
     public static void main(String[] args) {
 
-        User yourself = new User("Default", "insert_profilPicture", "change_msgBio");
+        User yourself = new User("Default", null, "change_msgBio");
         yourself.setUsername();
         yourself.setMsgBio();
 

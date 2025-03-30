@@ -1,10 +1,11 @@
 package fr.ynov.kim.domain;
 
+import javax.swing.*;
 import java.util.Scanner;
 
 public class User extends Person {
 
-    public User(String username, String profilPicture, String msgBio) {
+    public User(String username, ImageIcon profilPicture, String msgBio) {
         super(username, profilPicture, msgBio);
 
     }
@@ -19,7 +20,6 @@ public class User extends Person {
         Scanner scanProfilPicture = new Scanner(System.in);
         // Display all ProfilPictures
         System.out.println("Choose your ProfilPicture: ");
-        this.profilPicture = scanProfilPicture.nextLine();
     }
 
     public void setMsgBio() {

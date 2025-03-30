@@ -1,12 +1,15 @@
 package fr.ynov.kim.domain;
 
+import javax.swing.*;
+import java.awt.*;
+
 public abstract class Person {
 
     String username;
-    String profilPicture;
+    ImageIcon profilPicture;
     String msgBio;
 
-    public Person (String username, String profilPicture, String msgBio) {
+    public Person (String username, ImageIcon profilPicture, String msgBio) {
         this.username = username;
         this.profilPicture = profilPicture;
         this.msgBio = msgBio;
@@ -16,7 +19,7 @@ public abstract class Person {
         return username;
     }
 
-    public String getProfilPicture() {
+    public ImageIcon getProfilPicture() {
         return profilPicture;
     }
 

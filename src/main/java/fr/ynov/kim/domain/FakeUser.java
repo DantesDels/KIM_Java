@@ -1,7 +1,9 @@
 
 package fr.ynov.kim.domain;
 
+import javax.swing.*;
 import java.util.*;
+import java.util.Timer;
 
 
 public class FakeUser extends Person {
@@ -10,7 +12,7 @@ public class FakeUser extends Person {
     private List<Discussion> script;
     private Timer timerUntilNextConnection;
 
-    public FakeUser(String username, String profilPicture, String msgBio, List<Discussion> script) {
+    public FakeUser(String username, ImageIcon profilPicture, String msgBio, List<Discussion> script) {
         super(username, profilPicture, msgBio);
 
         this.script = script;
