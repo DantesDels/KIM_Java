@@ -35,7 +35,7 @@ public class Message {
         this.choice = choice;
     }
 
-    public void jsonMainReader() {
+    public static void jsonMainReader() {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -47,12 +47,16 @@ public class Message {
                 String key = field.getKey();
                 JsonNode value = field.getValue();
 
-                if (key.contains("/Txt")) {
-                    System.out.println("Txt : " + value.asText());
+                if (key.contains("/Txt") && key.contains("/Choice")) {
+                    String idString = key.substring(key.lastIndexOf("_") + 1);
+                    int id = parseInt(idString);
+                    System.out.println("Txt "+ id + " " + value.asText());
                 }
 
                 if (key.contains("/Choice")) {
-                    System.out.println("Choice : " + value.asText());
+                    String idString = key.substring(key.lastIndexOf("_") + 1);
+                    int id = parseInt(idString);
+                    System.out.println("Choice " + id + " " + value.asText());
                 }
             }
         } catch (JsonProcessingException e) {
@@ -66,15 +70,6 @@ public class Message {
         int id = parseInt(key.substring(key.lastIndexOf("_") + 1));
         return id;
     }
-
-    public String getTxtFromFakeUser() {
-        return id;
-    }
-
-    public String getChoiceFromUser() {
-        return choice;
-    }
-
 
     public LocalDateTime getTime() {
         return time;

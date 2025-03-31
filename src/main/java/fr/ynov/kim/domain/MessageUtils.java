@@ -9,6 +9,7 @@ public class MessageUtils {
 
     public static List<FakeUser> initiliazeUser() {
 
+        /*
         Message Test = new Message("Choose a start", List.of(
                 new Message("Start1", List.of(
                         new Message("1.1", Collections.emptyList()),
@@ -78,28 +79,28 @@ public class MessageUtils {
                 ))
         ));
 
+
         Discussion discussionStart = new Discussion("Start", Test);
         Discussion discussionPlanet = new Discussion("Planets", Test2);
         Discussion discussionArhtur = new Discussion("Drifter.", convoStart);
-
+*/
 
 
         FakeUser Amir = new FakeUser("Amir", "H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", List.of(
-                discussionArhtur
+                //discussionArhtur
         ));
 
         FakeUser Aoi = new FakeUser("Aoi","xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
-                discussionArhtur
+                //discussionArhtur
         ));
 
 
         FakeUser Arthur = new FakeUser("Arthur","Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
-
-                discussionArhtur
+                //discussionArhtur
         ));
 
         FakeUser Eleanor = new FakeUser("Eleanor","Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
-                discussionArhtur
+                //discussionArhtur
         ));
 
 
