@@ -199,11 +199,13 @@ public class MessageUtils {
                  * /*
                  * id != choices
                  * id = conversion name
-                 * choice = reponse User / fakeUser
-                 * TRUE choice de User = /Choice
-                 * start Point = if id != ALL choices[]
+                 * choices = replies from User / fakeUser
                  *
-                 *  TO DO : add start Point
+                 * TRUE choice for User = String contains ".../Choice..."
+                 *
+                 * start Point of Discussion (1st Message) = if id != ALL choices[]
+                 *
+                 *  TO DO : find & add start Point
                  * */
         ));
 
