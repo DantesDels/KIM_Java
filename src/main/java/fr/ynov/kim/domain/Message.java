@@ -1,20 +1,28 @@
 package fr.ynov.kim.domain;
 
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 public class Message {
 
+    public int id;
+    public String type;
+    public String name;
+    public int choice;
     private LocalDateTime time;
     private String msg;
     private List<Message> messages;
-
-    public String id;
-    public String type;
-    public String name;
-    public String choice;
 
     public Message(String msg, List<Message> messages) {
         this.time = java.time.LocalDateTime.now();
@@ -27,8 +35,36 @@ public class Message {
         this.choice = choice;
     }
 
-    public void jsonReader() {
-        //ObjectMapper objectMapper = new ObjectMapper().
+    public void jsonMainReader() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            JsonNode rootNode = mapper.readTree(new File("./res/discussions_JSON/en.json"));
+            Iterator<Map.Entry<String, JsonNode>> fields = rootNode.fields();
+
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> field = fields.next();
+                String key = field.getKey();
+                JsonNode value = field.getValue();
+
+                if (key.contains("/Txt")) {
+                    System.out.println("Txt : " + value.asText());
+                }
+
+                if (key.contains("/Choice")) {
+                    System.out.println("Choice : " + value.asText());
+                }
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static int extractIdFromJsonKey(String key) {
+        int id = parseInt(key.substring(key.lastIndexOf("_") + 1));
+        return id;
     }
 
     public String getTxtFromFakeUser() {
