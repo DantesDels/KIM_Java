@@ -24,9 +24,9 @@ public class Message {
     private String msg;
     private List<Message> messages;
 
-    public Message(String msg, List<Message> messages) {
+    public Message(String value, List<Message> messages) {
         this.time = java.time.LocalDateTime.now();
-        this.msg = msg;
+        this.msg = value;
         this.messages = messages;
 
         this.id = id;
@@ -35,7 +35,7 @@ public class Message {
         this.choice = choice;
     }
 
-    public static void jsonMainReader() {
+    public static String jsonMainReader() {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -44,29 +44,36 @@ public class Message {
 
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> field = fields.next();
+
                 String key = field.getKey();
                 JsonNode value = field.getValue();
 
-                if (key.contains("/Txt") && key.contains("/Choice")) {
-                    String idString = key.substring(key.lastIndexOf("_") + 1);
-                    int id = parseInt(idString);
-                    System.out.println("Txt "+ id + " " + value.asText());
+                if (key.contains("/Messenger")) {
+                    System.out.println(value);
+                    continue;
+                }
+
+                String idString = key.substring(key.lastIndexOf("_") + 1);
+                int id = parseInt(idString);
+
+                if (key.contains("/Txt")) {
+                    System.out.println(key + " Txt "+ id + " " + value.asText());
                 }
 
                 if (key.contains("/Choice")) {
-                    String idString = key.substring(key.lastIndexOf("_") + 1);
-                    int id = parseInt(idString);
-                    System.out.println("Choice " + id + " " + value.asText());
+                    System.out.println(key + " Choice " + id + " " + value.asText());
                 }
             }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+           System.out.println(e);
+        } catch (NumberFormatException e) {
+            System.out.println(e);
         }
+        return null;
     }
 
     public static int extractIdFromJsonKey(String key) {
+        jsonMainReader();
         int id = parseInt(key.substring(key.lastIndexOf("_") + 1));
         return id;
     }
@@ -76,6 +83,7 @@ public class Message {
     }
 
     public String getMsg() {
+        jsonMainReader();
         return msg;
     }
 
