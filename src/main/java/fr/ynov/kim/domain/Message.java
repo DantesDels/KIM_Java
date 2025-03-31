@@ -20,6 +20,7 @@ public class Message {
     public String type;
     public String name;
     public int choice;
+
     private LocalDateTime time;
     private String msg;
     private List<Message> messages;
@@ -35,45 +36,8 @@ public class Message {
         this.choice = choice;
     }
 
-    public static String jsonMainReader() {
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            JsonNode rootNode = mapper.readTree(new File("./res/discussions_JSON/en.json"));
-            Iterator<Map.Entry<String, JsonNode>> fields = rootNode.fields();
-
-            while (fields.hasNext()) {
-                Map.Entry<String, JsonNode> field = fields.next();
-
-                String key = field.getKey();
-                JsonNode value = field.getValue();
-
-                if (key.contains("/Messenger")) {
-                    System.out.println(value);
-                    continue;
-                }
-
-                String idString = key.substring(key.lastIndexOf("_") + 1);
-                int id = parseInt(idString);
-
-                if (key.contains("/Txt")) {
-                    System.out.println(key + " Txt "+ id + " " + value.asText());
-                }
-
-                if (key.contains("/Choice")) {
-                    System.out.println(key + " Choice " + id + " " + value.asText());
-                }
-            }
-        } catch (IOException e) {
-           System.out.println(e);
-        } catch (NumberFormatException e) {
-            System.out.println(e);
-        }
-        return null;
-    }
 
     public static int extractIdFromJsonKey(String key) {
-        jsonMainReader();
         int id = parseInt(key.substring(key.lastIndexOf("_") + 1));
         return id;
     }
@@ -83,7 +47,6 @@ public class Message {
     }
 
     public String getMsg() {
-        jsonMainReader();
         return msg;
     }
 

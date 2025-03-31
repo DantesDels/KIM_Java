@@ -1,12 +1,12 @@
 package fr.ynov.kim.main;
 
-import fr.ynov.kim.domain.Message;
+import fr.ynov.kim.domain.MessageUtils;
 
 public class Test {
 
     public static void main(String[] args) {
 
-        Message.jsonMainReader();
+        MessageUtils.jsonMainReader();
 
     }
 }

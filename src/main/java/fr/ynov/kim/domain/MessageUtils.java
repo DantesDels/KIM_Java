@@ -1,11 +1,115 @@
 package fr.ynov.kim.domain;
 
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.swing.*;
-import javax.xml.namespace.QName;
-import java.util.Collections;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+import static java.lang.Integer.parseInt;
 
 public class MessageUtils {
+
+    public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<String, Map<String, Map<Integer, Message>>>();
+
+    public static String jsonMainReader() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            JsonNode rootNode = mapper.readTree(new File("./res/discussions_JSON/en.json"));
+            Iterator<Map.Entry<String, JsonNode>> fields = rootNode.fields();
+
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> field = fields.next();
+
+                String key = field.getKey();
+                JsonNode value = field.getValue();
+
+                if (key.contains("/Messenger")) {
+                    System.out.println(value);
+                    continue;
+                }
+
+                String idString = key.substring(key.lastIndexOf("_") + 1);
+                int id = parseInt(idString);
+                String fakeUserName = key.split("/")[4];
+                String conversationObject = key.split("_")[1];
+                System.out.println(fakeUserName + " " + conversationObject + " " + id + " " + value.asText());
+
+                if (!userMessages.containsKey(fakeUserName)) {
+                    userMessages.put(fakeUserName, new HashMap<String, Map<Integer, Message>>());
+                }
+                if (!userMessages.get(fakeUserName).containsKey(conversationObject)) {
+                    userMessages.get(fakeUserName).put(conversationObject, new HashMap<Integer, Message>());
+                }
+                userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(value.textValue(), new ArrayList<Message>()));
+            }
+
+            String[] fakeUsers = {"Aoi"};
+
+            for (String fakeUser : fakeUsers) {
+
+                rootNode = mapper.readTree(new File("./res/discussions_JSON/" + fakeUser + "Dialogue_rom.dialogue.json"));
+
+                for (JsonNode node : rootNode) {
+                    fields = node.fields();
+                    int id = 0 ;
+                    ArrayList<Integer> choices = new ArrayList<>();
+                    String fakeUserName = "";
+                    String conversationObject = "";
+
+                    while (fields.hasNext()) {
+                        Map.Entry<String, JsonNode> field = fields.next();
+                        String key = field.getKey();
+                        JsonNode value = field.getValue();
+
+                        if (key.equals("id")) {
+                            id = parseInt(value.asText());
+                        }
+
+                        if (key.equals("choices")){
+                            for (JsonNode choice : value) {
+                                choices.add(parseInt(choice.asText()));
+                            }
+                        }
+
+                        if (key.equals("name")) {
+                            String idString = value.asText().substring(value.asText().lastIndexOf("_") + 1);
+                            id = parseInt(idString);
+                            fakeUserName = value.asText().split("/")[4];
+                            conversationObject = value.asText().split("_")[1];
+                        }
+
+                        Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id);
+
+                        for (int choice : choices) {
+                            currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
+                        }
+                    }
+                }
+            }
+
+                /*
+                if (key.contains("/Txt")) {
+                    System.out.println(key + " Txt "+ id + " " + value.asText());
+                }
+
+                if (key.contains("/Choice")) {
+                    System.out.println(key + " Choice " + id + " " + value.asText());
+                } */
+
+
+        } catch (IOException e) {
+            System.out.println(e);
+        } catch (NumberFormatException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
 
     public static List<FakeUser> initiliazeUser() {
 
@@ -90,16 +194,25 @@ public class MessageUtils {
                 //discussionArhtur
         ));
 
-        FakeUser Aoi = new FakeUser("Aoi","xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
-                //discussionArhtur
+        FakeUser Aoi = new FakeUser("Aoi", "xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
+                /**
+                 * /*
+                 * id != choices
+                 * id = conversion name
+                 * choice = reponse User / fakeUser
+                 * TRUE choice de User = /Choice
+                 * start Point = if id != ALL choices[]
+                 *
+                 *  TO DO : add start Point
+                 * */
         ));
 
 
-        FakeUser Arthur = new FakeUser("Arthur","Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
+        FakeUser Arthur = new FakeUser("Arthur", "Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
                 //discussionArhtur
         ));
 
-        FakeUser Eleanor = new FakeUser("Eleanor","Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
+        FakeUser Eleanor = new FakeUser("Eleanor", "Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
                 //discussionArhtur
         ));
 

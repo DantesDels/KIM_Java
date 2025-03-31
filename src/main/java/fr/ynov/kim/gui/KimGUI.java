@@ -101,7 +101,7 @@ public class KimGUI extends JFrame {
             JPanel contactPanel = createContactPanel(
                     fakeUser.getUsername(),
                     fakeUser.getPseudo(),
-                    fakeUser.getScript().get(0).startMessage.getMsg(),
+                    fakeUser.getScript().getFirst().startMessage.getMsg(),
                     usernameFont,
                     messageFont,
                     fakeUser.getProfilePicture()
