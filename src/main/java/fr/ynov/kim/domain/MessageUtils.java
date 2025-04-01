@@ -82,29 +82,37 @@ public class MessageUtils {
                     // Stocker dans un tableau intermédiaire les objets de dialogue, pour pouvoir les reparcourir en fin de boucle (une fois qu'on a fini le premier parcours total)
                     // Puis pour chacun des choices, le récupérer par son choiceId, et vérifier si lui même a des choices, et vers quel message il pointe
 
-                    discussionMap = new HashMap<>();
-                    discussionMap.put(id, node);
-                }
+                    Map<Integer, JsonNode> dialogueMap = new HashMap<>();
 
-                assert discussionMap != null;
-                for (Map.Entry<Integer, JsonNode> entry : discussionMap.entrySet()) {
-                    JsonNode node = entry.getValue();
-                    int id = entry.getKey();
-                    ArrayList<Integer> choices = new ArrayList<>();
+                    // Premier parcours pour stocker les objets de dialogue
+                    for (JsonNode node : rootNode) {
+                        dialogueMap.put(id, node);
+                    }
 
-                };
+                    // Deuxième parcours pour traiter les choices
+                    for (Map.Entry<Integer, JsonNode> entry : dialogueMap.entrySet()) {
+                        JsonNode node = entry.getValue();
+                        int id = entry.getKey();
+                        ArrayList<Integer> choices = new ArrayList<>();
+                        node.get("choices").elements().forEachRemaining(choice -> {
+                            choices.add(choice.asInt());
+                        });
 
+                        Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id);
+                        for (int choice : choices) {
+                            currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
+                        }
+                    }
                 // Map<Integer, Dialogue>
                 // Dialogue: type, name, choices (int[])
+
                 try {
                     Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(idMessage);
                     for (int choice : choices) {
                         currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
                     }
 
-                } catch (NullPointerException e) {
-                    continue;
-                }
+                } catch (NullPointerException e) {}
             }
 
             // Reparcourir une 2e fois le tableau qu'on vient de créer avec key = id et value = type, name, choices[]
