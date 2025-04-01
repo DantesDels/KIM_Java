@@ -11,6 +11,7 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
+
 public class MessageUtils {
 
     public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<String, Map<String, Map<Integer, Message>>>();
@@ -25,8 +26,8 @@ public class MessageUtils {
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> field = fields.next();
 
-                String key = field.getKey();
-                JsonNode value = field.getValue();
+                String key = field.getKey(); // Nom à gauche
+                JsonNode value = field.getValue(); // Valeur à droite
 
                 if (key.contains("/Messenger")) {
                     System.out.println(value);
@@ -34,7 +35,12 @@ public class MessageUtils {
                 }
 
                 String idString = key.substring(key.lastIndexOf("_") + 1);
-                int id = parseInt(idString);
+                Integer id = null;
+                try {
+                    id = parseInt(idString);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
                 String fakeUserName = key.split("/")[4];
                 String conversationObject = key.split("_")[1];
                 System.out.println(fakeUserName + " " + conversationObject + " " + id + " " + value.asText());
@@ -54,43 +60,57 @@ public class MessageUtils {
 
                 rootNode = mapper.readTree(new File("./res/discussions_JSON/" + fakeUser + "Dialogue_rom.dialogue.json"));
 
+                Map<Integer, JsonNode> discussionMap = null;
                 for (JsonNode node : rootNode) {
                     fields = node.fields();
-                    int id = 0 ;
-                    ArrayList<Integer> choices = new ArrayList<>();
-                    String fakeUserName = "";
-                    String conversationObject = "";
-
-                    while (fields.hasNext()) {
-                        Map.Entry<String, JsonNode> field = fields.next();
-                        String key = field.getKey();
-                        JsonNode value = field.getValue();
-
-                        if (key.equals("id")) {
-                            id = parseInt(value.asText());
-                        }
-
-                        if (key.equals("choices")){
-                            for (JsonNode choice : value) {
-                                choices.add(parseInt(choice.asText()));
-                            }
-                        }
-
-                        if (key.equals("name")) {
-                            String idString = value.asText().substring(value.asText().lastIndexOf("_") + 1);
-                            id = parseInt(idString);
-                            fakeUserName = value.asText().split("/")[4];
-                            conversationObject = value.asText().split("_")[1];
-                        }
-
-                        Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id);
-
-                        for (int choice : choices) {
-                            currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
-                        }
+                    String nameNode = node.has("name") ? node.get("name").asText() : null;
+                    if (nameNode == null) {
+                        continue;
                     }
+
+                    int id = node.get("id").asInt();
+                    String idString = nameNode.substring(nameNode.lastIndexOf("_") + 1);
+                    int idMessage = parseInt(idString);
+                    String fakeUserName = nameNode.split("/")[4];
+                    String conversationObject = nameNode.split("_")[1];
+
+                    ArrayList<Integer> choices = new ArrayList<>();
+                    node.get("choices").elements().forEachRemaining(choice -> {
+                        choices.add(choice.asInt());
+                    });
+
+                    // Stocker dans un tableau intermédiaire les objets de dialogue, pour pouvoir les reparcourir en fin de boucle (une fois qu'on a fini le premier parcours total)
+                    // Puis pour chacun des choices, le récupérer par son choiceId, et vérifier si lui même a des choices, et vers quel message il pointe
+
+                    discussionMap = new HashMap<>();
+                    discussionMap.put(id, node);
+                }
+
+                assert discussionMap != null;
+                for (Map.Entry<Integer, JsonNode> entry : discussionMap.entrySet()) {
+                    JsonNode node = entry.getValue();
+                    int id = entry.getKey();
+                    ArrayList<Integer> choices = new ArrayList<>();
+
+                });
+
+                // Map<Integer, Dialogue>
+                // Dialogue: type, name, choices (int[])
+                try {
+                    Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(idMessage);
+                    for (int choice : choices) {
+                        currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
+                    }
+
+                } catch (NullPointerException e) {
+                    continue;
                 }
             }
+
+            // Reparcourir une 2e fois le tableau qu'on vient de créer avec key = id et value = type, name, choices[]
+            // Indiquer que si il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
+            // Si le key possède une value choice[null], alors c'est un startMessage
+        }
 
                 /*
                 if (key.contains("/Txt")) {
@@ -102,7 +122,7 @@ public class MessageUtils {
                 } */
 
 
-        } catch (IOException e) {
+    } catch (IOException e) {
             System.out.println(e);
         } catch (NumberFormatException e) {
             System.out.println(e);
