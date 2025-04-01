@@ -110,7 +110,7 @@ public class MessageUtils {
             // Reparcourir une 2e fois le tableau qu'on vient de créer avec key = id et value = type, name, choices[]
             // Indiquer que si il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
             // Si le key possède une value choice[null], alors c'est un startMessage
-        }
+
 
                 /*
                 if (key.contains("/Txt")) {
