@@ -92,7 +92,7 @@ public class MessageUtils {
                     int id = entry.getKey();
                     ArrayList<Integer> choices = new ArrayList<>();
 
-                });
+                };
 
                 // Map<Integer, Dialogue>
                 // Dialogue: type, name, choices (int[])
