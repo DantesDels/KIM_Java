@@ -1,6 +1,7 @@
 package fr.ynov.kim.domain;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,7 +17,7 @@ public class MessageUtils {
 
     public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<String, Map<String, Map<Integer, Message>>>();
 
-    public static String jsonMainReader() {
+    public static void jsonMainReader() {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -60,19 +61,13 @@ public class MessageUtils {
 
                 rootNode = mapper.readTree(new File("./res/discussions_JSON/" + fakeUser + "Dialogue_rom.dialogue.json"));
 
-                Map<Integer, JsonNode> discussionMap = null;
+                Map<Integer, JsonNode> dialogueMap = new HashMap<>();
+
                 for (JsonNode node : rootNode) {
                     fields = node.fields();
-                    String nameNode = node.has("name") ? node.get("name").asText() : null;
-                    if (nameNode == null) {
-                        continue;
-                    }
 
                     int id = node.get("id").asInt();
-                    String idString = nameNode.substring(nameNode.lastIndexOf("_") + 1);
-                    int idMessage = parseInt(idString);
-                    String fakeUserName = nameNode.split("/")[4];
-                    String conversationObject = nameNode.split("_")[1];
+
 
                     ArrayList<Integer> choices = new ArrayList<>();
                     node.get("choices").elements().forEachRemaining(choice -> {
@@ -82,42 +77,49 @@ public class MessageUtils {
                     // Stocker dans un tableau intermédiaire les objets de dialogue, pour pouvoir les reparcourir en fin de boucle (une fois qu'on a fini le premier parcours total)
                     // Puis pour chacun des choices, le récupérer par son choiceId, et vérifier si lui même a des choices, et vers quel message il pointe
 
-                    Map<Integer, JsonNode> dialogueMap = new HashMap<>();
 
                     // Premier parcours pour stocker les objets de dialogue
-                    for (JsonNode node : rootNode) {
                         dialogueMap.put(id, node);
                     }
 
                     // Deuxième parcours pour traiter les choices
                     for (Map.Entry<Integer, JsonNode> entry : dialogueMap.entrySet()) {
+
                         JsonNode node = entry.getValue();
-                        int id = entry.getKey();
-                        ArrayList<Integer> choices = new ArrayList<>();
-                        node.get("choices").elements().forEachRemaining(choice -> {
-                            choices.add(choice.asInt());
+                        String nameNode = node.has("name") ? node.get("name").asText() : null;
+                        if (nameNode == null) {
+                            continue;
+                        }
+
+                        try {
+                            String fakeUserName = nameNode.split("/")[4];
+                            String conversationObject = nameNode.split("_")[1];
+
+
+                        JsonNode node2 = entry.getValue();
+                        int id2 = entry.getKey();
+                        ArrayList<Integer> choices2 = new ArrayList<>();
+                        node2.get("choices").elements().forEachRemaining(choice -> {
+                            choices2.add(choice.asInt());
                         });
 
-                        Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id);
-                        for (int choice : choices) {
-                            currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
+                        try {
+                            Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id2);
+                            for (int choice : choices2) {
+                                currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
+                            }
+                        } catch (NullPointerException e) {}
+                        } catch (ArrayIndexOutOfBoundsException e) {
                         }
                     }
-                // Map<Integer, Dialogue>
-                // Dialogue: type, name, choices (int[])
+                    // Map<Integer, Dialogue>
+                    // Dialogue: type, name, choices (int[])
 
-                try {
-                    Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(idMessage);
-                    for (int choice : choices) {
-                        currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
-                    }
+                }
 
-                } catch (NullPointerException e) {}
-            }
-
-            // Reparcourir une 2e fois le tableau qu'on vient de créer avec key = id et value = type, name, choices[]
-            // Indiquer que si il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
-            // Si le key possède une value choice[null], alors c'est un startMessage
+                // Reparcourir une 2e fois le tableau qu'on vient de créer avec key = id et value = type, name, choices[]
+                // Indiquer que si il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
+                // Si le key possède une value choice[null], alors c'est un startMessage
 
 
                 /*
@@ -130,14 +132,10 @@ public class MessageUtils {
                 } */
 
 
-    } catch (IOException e) {
-            System.out.println(e);
-        } catch (NumberFormatException e) {
-            System.out.println(e);
+            } catch (JsonProcessingException ex) {
+        } catch (IOException ex) {
         }
-        return null;
     }
-
 
     public static List<FakeUser> initiliazeUser() {
 
