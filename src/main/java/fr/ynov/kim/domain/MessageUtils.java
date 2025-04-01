@@ -12,6 +12,15 @@ import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
+/**
+ * /*
+ * id != choices
+ * id = conversion name
+ * choice = reponse User / fakeUser
+ * TRUE choice de User = /Choice
+ * start Point = if id != ALL choices[]
+ *  TO DO : add start Point
+ **/
 
 public class MessageUtils {
 
@@ -27,8 +36,8 @@ public class MessageUtils {
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> field = fields.next();
 
-                String key = field.getKey(); // Nom à gauche
-                JsonNode value = field.getValue(); // Valeur à droite
+                String key = field.getKey(); // fakeUser name on Left
+                JsonNode value = field.getValue(); // Value on Right
 
                 if (key.contains("/Messenger")) {
                     System.out.println(value);
@@ -64,10 +73,8 @@ public class MessageUtils {
                 Map<Integer, JsonNode> dialogueMap = new HashMap<>();
 
                 for (JsonNode node : rootNode) {
-                    fields = node.fields();
 
                     int id = node.get("id").asInt();
-
 
                     ArrayList<Integer> choices = new ArrayList<>();
                     node.get("choices").elements().forEachRemaining(choice -> {
@@ -77,12 +84,10 @@ public class MessageUtils {
                     // Stocker dans un tableau intermédiaire les objets de dialogue, pour pouvoir les reparcourir en fin de boucle (une fois qu'on a fini le premier parcours total)
                     // Puis pour chacun des choices, le récupérer par son choiceId, et vérifier si lui même a des choices, et vers quel message il pointe
 
-
-                    // Premier parcours pour stocker les objets de dialogue
-                        dialogueMap.put(id, node);
+                     dialogueMap.put(id, node);
                     }
 
-                    // Deuxième parcours pour traiter les choices
+                    // Second reading to parse choices
                     for (Map.Entry<Integer, JsonNode> entry : dialogueMap.entrySet()) {
 
                         JsonNode node = entry.getValue();
@@ -95,9 +100,9 @@ public class MessageUtils {
                             String fakeUserName = nameNode.split("/")[4];
                             String conversationObject = nameNode.split("_")[1];
 
-
                         JsonNode node2 = entry.getValue();
                         int id2 = entry.getKey();
+
                         ArrayList<Integer> choices2 = new ArrayList<>();
                         node2.get("choices").elements().forEachRemaining(choice -> {
                             choices2.add(choice.asInt());
@@ -112,25 +117,9 @@ public class MessageUtils {
                         } catch (ArrayIndexOutOfBoundsException e) {
                         }
                     }
-                    // Map<Integer, Dialogue>
-                    // Dialogue: type, name, choices (int[])
-
                 }
-
-                // Reparcourir une 2e fois le tableau qu'on vient de créer avec key = id et value = type, name, choices[]
                 // Indiquer que si il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
                 // Si le key possède une value choice[null], alors c'est un startMessage
-
-
-                /*
-                if (key.contains("/Txt")) {
-                    System.out.println(key + " Txt "+ id + " " + value.asText());
-                }
-
-                if (key.contains("/Choice")) {
-                    System.out.println(key + " Choice " + id + " " + value.asText());
-                } */
-
 
             } catch (JsonProcessingException ex) {
         } catch (IOException ex) {
@@ -139,7 +128,7 @@ public class MessageUtils {
 
     public static List<FakeUser> initiliazeUser() {
 
-        /*
+
         Message Test = new Message("Choose a start", List.of(
                 new Message("Start1", List.of(
                         new Message("1.1", Collections.emptyList()),
@@ -168,78 +157,29 @@ public class MessageUtils {
         ));
 
 
-
-        Message convoStart = new Message("Drifter.", List.of(
-                new Message("Arthur.", List.of(
-                        new Message("What're your thoughts about On-lyne?", List.of(
-                                new Message("Who?", List.of(
-                                        new Message("The band that's everywhere you look.", List.of(
-                                                new Message("Oh. Them.", List.of(
-                                                        new Message("I just wish they'd STOP.", Collections.emptyList()),
-                                                        new Message("I love them! We didn’t have anything like that in Duviri.", List.of(
-                                                                new Message("We clearly have different tastes in music.", List.of(
-                                                                        new Message("Sup?", List.of(
-                                                                                new Message("What're your thoughts about On-lyne?", List.of(
-                                                                                        new Message("Who?", List.of(
-                                                                                                new Message("The band that's everywhere you look.", List.of(
-                                                                                                        new Message("Oh. Them.", List.of(
-                                                                                                                new Message("Meh.", List.of(
-                                                                                                                        new Message("I just wish they'd STOP.", Collections.emptyList())
-                                                                                                                )),
-                                                                                                                new Message("Do they only have the one song?", List.of(
-                                                                                                                        new Message("Exactly! I just wish they'd STOP.", Collections.emptyList()),
-                                                                                                                        new Message("I love them! We didn’t have anything like that in Duviri.", List.of(
-                                                                                                                                new Message("We clearly have different tastes in music.", Collections.emptyList()),
-                                                                                                                                new Message("Heh.", List.of(
-                                                                                                                                        new Message("Nevermind", Collections.emptyList())
-                                                                                                                                ))
-                                                                                                                        ))
-                                                                                                                ))
-                                                                                                        ))
-                                                                                                ))
-                                                                                        ))
-                                                                                ))
-                                                                        ))
-                                                                ))
-                                                        ))
-                                                ))
-                                        ))
-                                ))
-                        ))
-                ))
-        ));
-
-
         Discussion discussionStart = new Discussion("Start", Test);
         Discussion discussionPlanet = new Discussion("Planets", Test2);
-        Discussion discussionArhtur = new Discussion("Drifter.", convoStart);
-*/
 
 
         FakeUser Amir = new FakeUser("Amir", "H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", List.of(
-                //discussionArhtur
+                discussionStart,
+                discussionPlanet
         ));
 
         FakeUser Aoi = new FakeUser("Aoi", "xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
-                /**
-                 * /*
-                 * id != choices
-                 * id = conversion name
-                 * choice = reponse User / fakeUser
-                 * TRUE choice de User = /Choice
-                 * start Point = if id != ALL choices[]
-                 *
-                 *  TO DO : add start Point
-                 * */
+                discussionStart,
+                discussionPlanet
+
         ));
 
-
         FakeUser Arthur = new FakeUser("Arthur", "Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
-                //discussionArhtur
+                discussionStart,
+                discussionPlanet
         ));
 
         FakeUser Eleanor = new FakeUser("Eleanor", "Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
-                //discussionArhtur
+                discussionStart,
+                discussionPlanet
         ));
 
 

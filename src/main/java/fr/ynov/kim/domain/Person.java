@@ -1,7 +1,6 @@
 package fr.ynov.kim.domain;
 
 import javax.swing.*;
-import java.awt.*;
 
 public abstract class Person {
 

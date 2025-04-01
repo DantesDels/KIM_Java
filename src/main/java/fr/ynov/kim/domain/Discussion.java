@@ -1,6 +1,5 @@
 package fr.ynov.kim.domain;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Discussion {
