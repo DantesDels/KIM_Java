@@ -133,7 +133,6 @@ public class MessageUtils {
      */
     public static List<FakeUser> initiliazeUser() {
 
-
         Message Test = new Message("Choose a start", List.of(
                 new Message("Start1", List.of(
                         new Message("1.1", Collections.emptyList()),
@@ -160,7 +159,6 @@ public class MessageUtils {
                         new Message("Mars", Collections.emptyList())
                 ))
         ));
-
 
         Discussion discussionStart = new Discussion("Start", Test);
         Discussion discussionPlanet = new Discussion("Planets", Test2);

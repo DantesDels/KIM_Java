@@ -141,13 +141,13 @@ public class KimGUI extends JFrame {
     /**
      * Creates a contact panel with the provided information.
      *
-     * @param username the username
-     * @param pseudo the pseudo of the user
-     * @param fakeUser the fake user
-     * @param lastMessage the last message
+     * @param username     the username
+     * @param pseudo       the pseudo of the user
+     * @param fakeUser     the fake user
+     * @param lastMessage  the last message
      * @param usernameFont the font for the username
-     * @param messageFont the font for the message
-     * @param profileIcon the profile icon
+     * @param messageFont  the font for the message
+     * @param profileIcon  the profile icon
      * @return the contact panel
      */
     private static JPanel createContactPanel(String username, String pseudo, FakeUser fakeUser, String lastMessage, Font usernameFont, Font messageFont, ImageIcon profileIcon) {
@@ -177,24 +177,26 @@ public class KimGUI extends JFrame {
 
         // Message Label
         gbc.gridy = 1;
-        JLabel messageLabel = new JLabel(lastMessage);
+        JLabel messageLabel = new JLabel("New Message");
         messageLabel.setFont(messageFont);
         textPanel.add(messageLabel, gbc);
         messageLabel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed (MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                if (e.getClickCount() == 1){
+                if (e.getClickCount() == 1) {
                     Font messageFont2 = new Font("Comic Sans MS", Font.BOLD, 11);
                     messageLabel.setFont(messageFont2);
                 }
             }
-            public void mouseReleased (MouseEvent e) {
+
+            public void mouseReleased(MouseEvent e) {
                 super.mouseReleased(e);
-                if (e.getClickCount() == 1){
+                if (e.getClickCount() == 1) {
                     messageLabel.setFont(messageFont);
                 }
             }
+
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
@@ -215,7 +217,8 @@ public class KimGUI extends JFrame {
                     gbc2.insets = new Insets(0, 25, 0, 25);
 
                     // Contact Profile
-                    ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");;
+                    ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");
+                    ;
                     iconContact.setImage(iconContact.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH));
                     JLabel profilePicContact = new JLabel(iconContact);
                     gbc.gridx = 0;
@@ -227,7 +230,7 @@ public class KimGUI extends JFrame {
                     // Contact Button
                     JButton profileButton = new JButton(" PROFILE ");
                     profileButton.setFont(messageFont);
-                    profileButton.addActionListener(new ActionListener(){
+                    profileButton.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             // TO DO : newFrame that shows bioMsg of fakeUser
@@ -254,7 +257,7 @@ public class KimGUI extends JFrame {
                     discussion.setFont(messageFont);
                     discussion.setBackground(Color.WHITE);
                     discussion.setSize(680, 400);
-                    discussion.append(fakeUser.getScript().getFirst().startMessage.getMsg());
+                    discussion.append("Choose your Discussion:\n");
 
                     chatFrame.add(discussion, gbc);
 
@@ -293,31 +296,40 @@ public class KimGUI extends JFrame {
     /**
      * Updates the possible replies for a given message.
      *
-     * @param message the current message
+     * @param message    the current message
      * @param discussion the text area for the discussion
-     * @param ReplyArea the panel for the replies
-     * @param element the main panel
-     * @param gbc the layout constraints
+     * @param ReplyArea  the panel for the replies
+     * @param element    the main panel
+     * @param gbc        the layout constraints
      */
-    private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element ,GridBagConstraints gbc) {
-        ReplyArea.removeAll();
+    private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element, GridBagConstraints gbc) {
 
-        // Code to update the replies
+        ReplyArea.removeAll();
+        ReplyArea.setLayout(new GridBagLayout());
+        GridBagConstraints replyGbc = new GridBagConstraints();
+        replyGbc.gridx = 0;
+        replyGbc.anchor = GridBagConstraints.WEST;
+        replyGbc.insets = new Insets(5, -340, 5, 5);
+
+        int gridy = 0;
+        int labelNumber = 1; // Initialiser le numéro de label
         for (Message reply : message.getReplies()) {
-            JLabel label = new JLabel(reply.getMsg());
-            if(reply.getReplies().isEmpty()){
-                label.setText(reply.getMsg() + " [End.] ");
+            replyGbc.gridy = gridy++;
+            JLabel label = new JLabel(labelNumber + ". " + reply.getMsg()); // Ajouter la numérotation
+            labelNumber++; // Incrémenter le numéro de label
+            if (reply.getReplies().isEmpty()) {
+                label.setText(labelNumber + ". " + reply.getMsg() + " [End.] ");
             }
-            label.addMouseListener(new MouseAdapter(){
-                public void mousePressed (MouseEvent e) {
+            label.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
-                    if (e.getClickCount() == 1){
+                    if (e.getClickCount() == 1) {
                         discussion.append("\n" + reply.getMsg());
                         UpdateReplies(reply, discussion, ReplyArea, element, gbc);
                     }
                 }
             });
-            ReplyArea.add(label, gbc);
+            ReplyArea.add(label, replyGbc);
         }
         element.revalidate();
         element.repaint();
