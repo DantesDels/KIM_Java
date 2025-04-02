@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fr.ynov.kim.domain.MessageUtils.userMessages;
 
 public class KimGUI extends JFrame {
 
@@ -22,6 +21,13 @@ public class KimGUI extends JFrame {
         SwingUtilities.invokeLater(() -> createAndShowGUI(fakeUsers));
     }
 
+    /**
+     * Loads a custom font from the specified path.
+     *
+     * @param path the path to the font file
+     * @param size the size of the font
+     * @return the loaded font
+     */
     private static Font loadCustomFont(String path, float size) {
         try {
             Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path));
@@ -43,6 +49,15 @@ public class KimGUI extends JFrame {
         return username.trim();
     }
 
+    /**
+     * Creates and displays the graphical user interface for the KIM application.
+     *
+     * <p>This method initializes a main window with a title, an icon,
+     * a top panel displaying the user's profile, and a contact list
+     * based on a list of FakeUser objects.</p>
+     *
+     * @param fakeUsers List of fake users to be displayed in the interface.
+     */
     private static void createAndShowGUI(List<FakeUser> fakeUsers) {
 
         String username = askUsername(JOptionPane.QUESTION_MESSAGE);
@@ -81,20 +96,19 @@ public class KimGUI extends JFrame {
         gbc.gridx = 0;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Ajouter usernameLabel
+        // Set font for usernameLabel
         gbc.gridy = 0;
         JLabel usernameLabel = new JLabel("USERNAME : ");
         usernameLabel.setFont(messageFont);
         usernamePanel.add(usernameLabel, gbc);
 
-        // Ajouter userNameLabel
+        // Add userNameLabel
         gbc.gridy = 1;
         JLabel userNameLabel = new JLabel(username);
         userNameLabel.setFont(usernameFont);
         usernamePanel.add(userNameLabel, gbc);
 
         topPanel.add(usernamePanel, BorderLayout.CENTER);
-
         frame.add(topPanel, BorderLayout.NORTH);
 
         // Contacts Panel
@@ -123,6 +137,19 @@ public class KimGUI extends JFrame {
         frame.setVisible(true);
     }
 
+
+    /**
+     * Creates a contact panel with the provided information.
+     *
+     * @param username the username
+     * @param pseudo the pseudo of the user
+     * @param fakeUser the fake user
+     * @param lastMessage the last message
+     * @param usernameFont the font for the username
+     * @param messageFont the font for the message
+     * @param profileIcon the profile icon
+     * @return the contact panel
+     */
     private static JPanel createContactPanel(String username, String pseudo, FakeUser fakeUser, String lastMessage, Font usernameFont, Font messageFont, ImageIcon profileIcon) {
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -263,9 +290,19 @@ public class KimGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Updates the possible replies for a given message.
+     *
+     * @param message the current message
+     * @param discussion the text area for the discussion
+     * @param ReplyArea the panel for the replies
+     * @param element the main panel
+     * @param gbc the layout constraints
+     */
     private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element ,GridBagConstraints gbc) {
         ReplyArea.removeAll();
 
+        // Code to update the replies
         for (Message reply : message.getReplies()) {
             JLabel label = new JLabel(reply.getMsg());
             if(reply.getReplies().isEmpty()){

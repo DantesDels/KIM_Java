@@ -126,6 +126,11 @@ public class MessageUtils {
         }
     }
 
+    /**
+     * Initializes the HardCoded discussion & the fake users.
+     *
+     * @return the list of fake users
+     */
     public static List<FakeUser> initiliazeUser() {
 
 

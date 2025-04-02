@@ -6,6 +6,7 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
+
 public class Message {
 
     public int id;
@@ -16,6 +17,7 @@ public class Message {
     private LocalDateTime time;
     private String msg;
     private List<Message> messages;
+
 
     public Message(String value, List<Message> messages) {
         this.time = java.time.LocalDateTime.now();

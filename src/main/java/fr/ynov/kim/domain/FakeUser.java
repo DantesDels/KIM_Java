@@ -33,6 +33,11 @@ public class FakeUser extends Person {
         System.out.println(getUsername() + " is online");
     }
 
+    /**
+     * Gets the dialogue script of the fake user.
+     *
+     * @return the list of discussions
+     */
     public List<Discussion> getScript() {
         return script;
     }
