@@ -10,9 +10,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static fr.ynov.kim.domain.MessageUtils.userMessages;
+
 public class KimGUI extends JFrame {
 
-    public static void main(String[] args) {
+    public static void launch() {
         List<FakeUser> fakeUsers = MessageUtils.initiliazeUser();
         SwingUtilities.invokeLater(() -> createAndShowGUI(fakeUsers));
     }
@@ -45,7 +47,7 @@ public class KimGUI extends JFrame {
 
         JFrame frame = new JFrame("Welcome to KIM!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 600);
+        frame.setSize(380, 500);
         frame.setLayout(new BorderLayout());
         frame.setIconImage(frameIcon.getImage());
         frame.setResizable(false);
@@ -137,18 +139,14 @@ public class KimGUI extends JFrame {
 
         // Username Label
         gbc.gridy = 0;
-        gbc.insets = new Insets(0, -60, 0, 0);
+        gbc.insets = new Insets(0, -130, 0, 0);
         JLabel usernameLabel = new JLabel(pseudo);
         usernameLabel.setFont(usernameFont);
         textPanel.add(usernameLabel, gbc);
 
         // Message Label
         gbc.gridy = 1;
-        gbc.insets = new Insets(0, -50, 0, 0);
-        JLabel messageLabel = new JLabel(
-                "<html><body style='width:150px;'>"
-                        + lastMessage +
-                        "</body></html>");
+        JLabel messageLabel = new JLabel(lastMessage);
         messageLabel.setFont(messageFont);
         textPanel.add(messageLabel, gbc);
         messageLabel.addMouseListener(new MouseAdapter() {
@@ -171,7 +169,6 @@ public class KimGUI extends JFrame {
                 if (e.getClickCount() == 2) {
 
                     JFrame chatFrame = new JFrame(pseudo);
-                    // chatFrame.setFont(usernameFont); doesn't apply
                     chatFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     chatFrame.setIconImage(iconFrame.getImage());
                     chatFrame.setSize(950, 600);
@@ -185,7 +182,6 @@ public class KimGUI extends JFrame {
                     gbc2.fill = GridBagConstraints.HORIZONTAL;
                     gbc.insets = new Insets(5, 5, 5, 5);
                     gbc2.insets = new Insets(0, 25, 0, 25);
-
 
                     // Contact Profile
                     ImageIcon iconContact = new ImageIcon("res/img/" + username + ".png");;
@@ -209,7 +205,6 @@ public class KimGUI extends JFrame {
                     gbc2.gridx = 0;
                     gbc2.gridy = 1;
                     chatFrame.add(profileButton, gbc2);
-
 
                     // chatArea
                     JPanel chatArea = new JPanel();

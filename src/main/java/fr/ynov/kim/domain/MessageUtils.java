@@ -161,6 +161,21 @@ public class MessageUtils {
         Discussion discussionPlanet = new Discussion("Planets", Test2);
 
 
+        FakeUser Arthur = new FakeUser("Arthur", "Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
+                discussionStart,
+                discussionPlanet
+        ));
+
+        FakeUser Eleanor = new FakeUser("Eleanor", "Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
+                discussionStart,
+                discussionPlanet
+        ));
+
+        FakeUser Lettie = new FakeUser("Lettie", "Belladona ~{@", new ImageIcon("res/img/Lettie.png"), "Bring me Coffee or Die.", List.of(
+                discussionStart,
+                discussionPlanet
+        ));
+
         FakeUser Amir = new FakeUser("Amir", "H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", List.of(
                 discussionStart,
                 discussionPlanet
@@ -172,27 +187,27 @@ public class MessageUtils {
 
         ));
 
-        FakeUser Arthur = new FakeUser("Arthur", "Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
+        FakeUser Quincy = new FakeUser("Quincy", "Soldja1Shot1kil", new ImageIcon("res/img/Quincy.png"), "Saw you comin' !", List.of(
                 discussionStart,
                 discussionPlanet
-        ));
 
-        FakeUser Eleanor = new FakeUser("Eleanor", "Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
-                discussionStart,
-                discussionPlanet
         ));
 
 
-        Amir.setOnline();
-        Aoi.setOnline();
         Arthur.setOnline();
         Eleanor.setOnline();
+        Lettie.setOnline();
+        Amir.setOnline();
+        Aoi.setOnline();
+        Quincy.setOnline();
 
         return List.of(
+                Arthur,
+                Eleanor,
+                Lettie,
                 Amir,
                 Aoi,
-                Arthur,
-                Eleanor
+                Quincy
         );
     }
 }
