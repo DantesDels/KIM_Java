@@ -1,9 +1,4 @@
-package fr.ynov.kim.main;
-
-import fr.ynov.kim.domain.Discussion;
-import fr.ynov.kim.domain.FakeUser;
-import fr.ynov.kim.domain.MessageUtils;
-import fr.ynov.kim.domain.User;
+package fr.ynov.kim.domain;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +8,7 @@ import java.util.Scanner;
 
 public class Application {
 
-    public static void main(String[] args) {
+    public static void launch() {
 
         User yourself = new User("Default", null, "change_msgBio");
         yourself.setUsername();

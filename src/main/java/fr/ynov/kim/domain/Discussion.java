@@ -1,6 +1,5 @@
 package fr.ynov.kim.domain;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 public class Discussion {
@@ -8,29 +7,10 @@ public class Discussion {
     public String title;
     public Message startMessage;
 
-    public String id;
-    public String type;
-    public String name;
-    public String choice;
-
     public Discussion(String title, Message startMessage) {
         this.title = title;
         this.startMessage = startMessage;
-
-        this.id = id;
-        this.type = type;
-        this.name = name;
-        this.choice = choice;
     }
-
-    public String getTxtFromFakeUser() {
-        return id;
-    }
-
-    public String getChoiceFromUser() {
-        return choice;
-    }
-
 
     public void displayReplies(Message currentMessage) {
         for (Message reply : currentMessage.getReplies()) {
