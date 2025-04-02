@@ -1,6 +1,8 @@
 package fr.ynov.kim.gui;
 
+import fr.ynov.kim.domain.Discussion;
 import fr.ynov.kim.domain.FakeUser;
+import fr.ynov.kim.domain.Message;
 import fr.ynov.kim.domain.MessageUtils;
 
 import javax.swing.*;
@@ -8,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static fr.ynov.kim.domain.MessageUtils.userMessages;
@@ -103,6 +106,7 @@ public class KimGUI extends JFrame {
             JPanel contactPanel = createContactPanel(
                     fakeUser.getUsername(),
                     fakeUser.getPseudo(),
+                    fakeUser,
                     fakeUser.getScript().getFirst().startMessage.getMsg(),
                     usernameFont,
                     messageFont,
@@ -119,7 +123,7 @@ public class KimGUI extends JFrame {
         frame.setVisible(true);
     }
 
-    private static JPanel createContactPanel(String username, String pseudo, String lastMessage, Font usernameFont, Font messageFont, ImageIcon profileIcon) {
+    private static JPanel createContactPanel(String username, String pseudo, FakeUser fakeUser, String lastMessage, Font usernameFont, Font messageFont, ImageIcon profileIcon) {
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
@@ -131,7 +135,7 @@ public class KimGUI extends JFrame {
         profilePic.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
         panel.add(profilePic, BorderLayout.WEST);
 
-        // Text Info Panel
+        // Config Grid
         JPanel textPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -209,13 +213,23 @@ public class KimGUI extends JFrame {
                     // chatArea
                     JPanel chatArea = new JPanel();
                     chatArea.setAutoscrolls(true);
-                    JScrollPane chatScroll = new JScrollPane(chatArea);
                     gbc.gridx = 1;
                     gbc.gridy = 0;
                     gbc.gridheight = 3;
                     gbc.weightx = 6;
                     gbc.weighty = 1;
-                    chatFrame.add(chatScroll, gbc);
+
+                    // Discussion content
+                    JTextArea discussion = new JTextArea();
+                    discussion.setEditable(false);
+                    discussion.setLineWrap(true);
+                    discussion.setWrapStyleWord(true);
+                    discussion.setFont(messageFont);
+                    discussion.setBackground(Color.WHITE);
+                    discussion.setSize(680, 400);
+                    discussion.append(fakeUser.getScript().getFirst().startMessage.getMsg());
+
+                    chatFrame.add(discussion, gbc);
 
                     // User Profile
                     ImageIcon iconUser = new ImageIcon("res/img/WarframeDEFAULT.png");
@@ -229,18 +243,48 @@ public class KimGUI extends JFrame {
 
                     // reply Area
                     JPanel ReplyArea = new JPanel();
-                    JScrollPane ReplyScroll = new JScrollPane(ReplyArea);
                     gbc.gridx = 1;
                     gbc.gridy = 3;
                     gbc.weightx = 6;
                     gbc.weighty = 0;
-                    chatFrame.add(ReplyScroll, gbc);
+                    chatFrame.add(ReplyArea, gbc);
+
+                    List<Message> lm = new ArrayList<>();
+                    for (Discussion script : fakeUser.getScript()) {
+                        lm.add(script.startMessage);
+                    }
+                    Message fakeMessage = new Message("", lm);
+                    UpdateReplies(fakeMessage, discussion, ReplyArea, panel, gbc);
                 }
             }
         });
-
         panel.add(textPanel, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element ,GridBagConstraints gbc) {
+        ReplyArea.removeAll();
+
+        for (Message reply : message.getReplies()) {
+            JLabel label = new JLabel(reply.getMsg());
+            if(reply.getReplies().isEmpty()){
+                label.setText(reply.getMsg() + " [End.] ");
+            }
+            label.addMouseListener(new MouseAdapter(){
+                public void mousePressed (MouseEvent e) {
+                    super.mousePressed(e);
+                    if (e.getClickCount() == 1){
+                        discussion.append("\n" + reply.getMsg());
+                        UpdateReplies(reply, discussion, ReplyArea, element, gbc);
+                    }
+                }
+            });
+            ReplyArea.add(label, gbc);
+        }
+        element.revalidate();
+        element.repaint();
+        ReplyArea.revalidate();
+        ReplyArea.repaint();
     }
 }
