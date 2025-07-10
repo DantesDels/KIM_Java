@@ -1,4 +1,4 @@
-package fr.ynov.kim.domain;
+package kim.domain;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,7 +24,14 @@ import static java.lang.Integer.parseInt;
 
 public class MessageUtils {
 
+    //
     public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<String, Map<String, Map<Integer, Message>>>();
+
+    // Dictionary for Chemistry level associated to FakeUser
+    public static Map<FakeUser, Integer> chemistryDict = new HashMap<>();
+
+    // Dictionary checking the Booleans associated to FakeUser
+    public static Map<FakeUser, Map<String, Boolean>> booleanDict = new HashMap<>();
 
     public static void jsonMainReader() {
         ObjectMapper mapper = new ObjectMapper();
@@ -44,6 +51,7 @@ public class MessageUtils {
                     continue;
                 }
 
+                // Get id as Int
                 String idString = key.substring(key.lastIndexOf("_") + 1);
                 Integer id = null;
                 try {
@@ -51,6 +59,8 @@ public class MessageUtils {
                 } catch (NumberFormatException e) {
                     continue;
                 }
+
+                // JSON Parser
                 String fakeUserName = key.split("/")[4];
                 String conversationObject = key.split("_")[1];
                 System.out.println(fakeUserName + " " + conversationObject + " " + id + " " + value.asText());

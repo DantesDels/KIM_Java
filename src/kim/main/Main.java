@@ -1,7 +1,6 @@
-package fr.ynov.kim.main;
+package kim.main;
 
-import fr.ynov.kim.domain.Application;
-import fr.ynov.kim.gui.KimGUI;
+import kim.gui.KimGUI;
 
 public class Main {
 

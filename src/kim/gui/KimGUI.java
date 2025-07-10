@@ -1,9 +1,9 @@
-package fr.ynov.kim.gui;
+package kim.gui;
 
-import fr.ynov.kim.domain.Discussion;
-import fr.ynov.kim.domain.FakeUser;
-import fr.ynov.kim.domain.Message;
-import fr.ynov.kim.domain.MessageUtils;
+import kim.domain.Discussion;
+import kim.domain.FakeUser;
+import kim.domain.Message;
+import kim.domain.MessageUtils;
 
 import javax.swing.*;
 import java.awt.*;

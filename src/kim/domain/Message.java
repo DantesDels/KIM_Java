@@ -1,4 +1,4 @@
-package fr.ynov.kim.domain;
+package kim.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
