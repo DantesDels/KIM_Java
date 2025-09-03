@@ -10,11 +10,11 @@ public class FakeUser extends Person {
 
     private boolean connectionStatus;
     private String pseudo ;
-    private List<Discussion> script;
+    private ArrayList<Discussion> script;
     private Timer timerUntilNextConnection;
     private ImageIcon profilePicture;
 
-    public FakeUser(String username, String pseudo, ImageIcon profilePicture, String msgBio, List<Discussion> script) {
+    public FakeUser(String username, String pseudo, ImageIcon profilePicture, String msgBio, ArrayList<Discussion> script) {
         super(username, profilePicture, msgBio);
 
         this.profilePicture = profilePicture;
@@ -35,13 +35,13 @@ public class FakeUser extends Person {
 
     /**
      * Gets the dialogue script of the fake user.
-     *
      * @return the list of discussions
      */
-    public List<Discussion> getScript() {
+    public ArrayList<Discussion> getScript() {
         return script;
     }
 
+    /*
     private void reply () {
         while (!script.isEmpty()) {
             Message message = script.get(0).startMessage;
@@ -59,6 +59,7 @@ public class FakeUser extends Person {
             }, timeBetweenMessages);
         }
     }
+    */
 
     public ImageIcon getProfilePicture() {
         return this.profilePicture;
@@ -78,7 +79,6 @@ public class FakeUser extends Person {
             @Override
             public void run() {
                 setOnline();
-
             }
         }, 50); // set on 5sec for testing purposes
     }

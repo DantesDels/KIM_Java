@@ -16,6 +16,7 @@ public class User extends Person {
         this.username = scanUsername.nextLine() ;
     }
 
+    /*
     public void setProfilePicture(String profilePicture) {
         Scanner scanProfilePicture = new Scanner(System.in);
         // Display all ProfilePictures
@@ -27,4 +28,6 @@ public class User extends Person {
         System.out.println("Change your Bio : ");
         this.msgBio = scanMsgBio.nextLine();
     }
+    */
+
 }

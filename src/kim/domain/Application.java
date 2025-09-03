@@ -12,7 +12,6 @@ public class Application {
 
         User yourself = new User("Default", null, "change_msgBio");
         yourself.setUsername();
-        yourself.setMsgBio();
 
         List<FakeUser> fakeUsers = MessageUtils.initiliazeUser();
 

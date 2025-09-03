@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.lang.Integer.parseInt;
@@ -16,7 +17,7 @@ import static java.lang.Integer.parseInt;
  * /*
  * id != choices
  * id = conversion name
- * choice = reponse User / fakeUser
+ * choice = response User / fakeUser
  * TRUE choice de User = /Choice
  * start Point = if id != ALL choices[]
  *  TO DO : add start Point
@@ -24,8 +25,8 @@ import static java.lang.Integer.parseInt;
 
 public class MessageUtils {
 
-    //
-    public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<String, Map<String, Map<Integer, Message>>>();
+    // Dictionary for userMessages | jsonMainReader Parsing result
+    public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<>();
 
     // Dictionary for Chemistry level associated to FakeUser
     public static Map<FakeUser, Integer> chemistryDict = new HashMap<>();
@@ -33,7 +34,8 @@ public class MessageUtils {
     // Dictionary checking the Booleans associated to FakeUser
     public static Map<FakeUser, Map<String, Boolean>> booleanDict = new HashMap<>();
 
-    public static void jsonMainReader() {
+
+    public static void jsonMainReader(List<FakeUser> fakeUsers) {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -74,14 +76,22 @@ public class MessageUtils {
                 userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(value.textValue(), new ArrayList<Message>()));
             }
 
-            String[] fakeUsers = {"Aoi"};
+            String[] fakeUsersUsername = {"Arthur", "Eleanor", "Aoi", "Lettie", "Amir", "Quincy"};
 
-            for (String fakeUser : fakeUsers) {
+            for (String fakeUser : fakeUsersUsername) {
+                
+                FakeUser currentUser = null;
+                for (FakeUser user : fakeUsers) {
+                    if (user.getUsername().equals(fakeUser)) {
+                        currentUser = user;
+                        break;
+                    }
+                }
 
                 rootNode = mapper.readTree(new File("./res/discussions_JSON/" + fakeUser + "Dialogue_rom.dialogue.json"));
-
                 Map<Integer, JsonNode> dialogueMap = new HashMap<>();
-
+                ArrayList<Integer> allChoices = new ArrayList<>();
+                
                 for (JsonNode node : rootNode) {
 
                     int id = node.get("id").asInt();
@@ -89,6 +99,7 @@ public class MessageUtils {
                     ArrayList<Integer> choices = new ArrayList<>();
                     node.get("choices").elements().forEachRemaining(choice -> {
                         choices.add(choice.asInt());
+                        allChoices.add(choice.asInt());
                     });
 
                     // Stocker dans un tableau intermédiaire les objets de dialogue, pour pouvoir les reparcourir en fin de boucle (une fois qu'on a fini le premier parcours total)
@@ -123,12 +134,15 @@ public class MessageUtils {
                             for (int choice : choices2) {
                                 currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
                             }
+                            if (!allChoices.contains(id2)){
+                                Discussion d = new Discussion(conversationObject, currentMessage);
+                                currentUser.getScript().add(d);
+                            }
                         } catch (NullPointerException e) {}
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                        }
+                        } catch (ArrayIndexOutOfBoundsException e) {}
                     }
                 }
-                // Indiquer que si il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
+                // Indiquer que s'il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
                 // Si le key possède une value choice[null], alors c'est un startMessage
 
             } catch (JsonProcessingException ex) {
@@ -141,6 +155,7 @@ public class MessageUtils {
      *
      * @return the list of fake users
      */
+
     public static List<FakeUser> initiliazeUser() {
 
         Message Test = new Message("Choose a start", List.of(
@@ -174,38 +189,36 @@ public class MessageUtils {
         Discussion discussionPlanet = new Discussion("Planets", Test2);
 
 
-        FakeUser Arthur = new FakeUser("Arthur", "Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", List.of(
+        FakeUser Arthur = new FakeUser("Arthur", "Broadsword", new ImageIcon("res/img/Arthur.png"), "Need a cup of coffee first", new ArrayList<>(List.of(
                 discussionStart,
                 discussionPlanet
-        ));
+        )));
 
-        FakeUser Eleanor = new FakeUser("Eleanor", "Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", List.of(
+        FakeUser Eleanor = new FakeUser("Eleanor", "Salem", new ImageIcon("res/img/Eleanor.png"), "Knows what you think, and yes that's a bad idea...", new ArrayList<>(List.of(
                 discussionStart,
                 discussionPlanet
-        ));
+        )));
 
-        FakeUser Lettie = new FakeUser("Lettie", "Belladona ~{@", new ImageIcon("res/img/Lettie.png"), "Bring me Coffee or Die.", List.of(
+        FakeUser Lettie = new FakeUser("Lettie", "Belladona ~{@", new ImageIcon("res/img/Lettie.png"), "Bring me Coffee or Die.", new ArrayList<>(List.of(
                 discussionStart,
                 discussionPlanet
-        ));
+        )));
 
-        FakeUser Amir = new FakeUser("Amir", "H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", List.of(
+        FakeUser Amir = new FakeUser("Amir", "H16h V0l7463", new ImageIcon("res/img/Amir.png"), "White Grey or Black, I just wear a Hat !", new ArrayList<>(List.of(
                 discussionStart,
                 discussionPlanet
-        ));
+        )));
 
-        FakeUser Aoi = new FakeUser("Aoi", "xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", List.of(
-                discussionStart,
-                discussionPlanet
-
-        ));
-
-        FakeUser Quincy = new FakeUser("Quincy", "Soldja1Shot1kil", new ImageIcon("res/img/Quincy.png"), "Saw you comin' !", List.of(
+        FakeUser Aoi = new FakeUser("Aoi", "xX GLIMMER Xx", new ImageIcon("res/img/Aoi.png"), "On-lyne 4ever ! <3", new ArrayList<>(List.of(
                 discussionStart,
                 discussionPlanet
 
-        ));
+        )));
 
+        FakeUser Quincy = new FakeUser("Quincy", "Soldja1Shot1kil", new ImageIcon("res/img/Quincy.png"), "Saw you comin' !", new ArrayList<>(List.of(
+                discussionStart,
+                discussionPlanet
+        )));
 
         Arthur.setOnline();
         Eleanor.setOnline();
@@ -224,4 +237,3 @@ public class MessageUtils {
         );
     }
 }
-

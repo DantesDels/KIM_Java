@@ -18,6 +18,7 @@ public class KimGUI extends JFrame {
 
     public static void launch() {
         List<FakeUser> fakeUsers = MessageUtils.initiliazeUser();
+        MessageUtils.jsonMainReader(fakeUsers);
         SwingUtilities.invokeLater(() -> createAndShowGUI(fakeUsers));
     }
 
