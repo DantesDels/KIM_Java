@@ -15,12 +15,8 @@ import static java.lang.Integer.parseInt;
 
 /**
  * /*
- * id != choices
- * id = conversion name
- * choice = response User / fakeUser
- * TRUE choice de User = /Choice
- * start Point = if id != ALL choices[]
- *  TO DO : add start Point
+ * id en.json != id .dialogue.json
+ * id en.json == name .dialogue.json
  **/
 
 public class MessageUtils {
@@ -39,6 +35,7 @@ public class MessageUtils {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
+            HashMap<String, String> indexMessages = new HashMap<>();
             JsonNode rootNode = mapper.readTree(new File("./res/discussions_JSON/en.json"));
             Iterator<Map.Entry<String, JsonNode>> fields = rootNode.fields();
 
@@ -47,35 +44,15 @@ public class MessageUtils {
 
                 String key = field.getKey(); // fakeUser name on Left
                 JsonNode value = field.getValue(); // Value on Right
+                indexMessages.put(key, value.asText());// Index of all messages
 
                 if (key.contains("/Messenger")) {
                     System.out.println(value);
                     continue;
                 }
-
-                // Get id as Int
-                String idString = key.substring(key.lastIndexOf("_") + 1);
-                Integer id = null;
-                try {
-                    id = parseInt(idString);
-                } catch (NumberFormatException e) {
-                    continue;
-                }
-
-                // JSON Parser
-                String fakeUserName = key.split("/")[4];
-                String conversationObject = key.split("_")[1];
-                System.out.println(fakeUserName + " " + conversationObject + " " + id + " " + value.asText());
-
-                if (!userMessages.containsKey(fakeUserName)) {
-                    userMessages.put(fakeUserName, new HashMap<String, Map<Integer, Message>>());
-                }
-                if (!userMessages.get(fakeUserName).containsKey(conversationObject)) {
-                    userMessages.get(fakeUserName).put(conversationObject, new HashMap<Integer, Message>());
-                }
-                userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(value.textValue(), new ArrayList<Message>()));
             }
 
+            // Parsing the choices & linking the messages
             String[] fakeUsersUsername = {"Arthur", "Eleanor", "Aoi", "Lettie", "Amir", "Quincy"};
 
             for (String fakeUser : fakeUsersUsername) {
@@ -95,16 +72,43 @@ public class MessageUtils {
                 for (JsonNode node : rootNode) {
 
                     int id = node.get("id").asInt();
+                
+                String name = node.has("name") ? node.get("name").asText() : null;
+                if (name == null) {
+                    continue;
+                }
 
+                String fakeUserName = null;
+                String conversationObject = null;
+
+                if (name.indexOf("/") == -1) {
+                    fakeUserName = fakeUser;
+                    conversationObject = name;
+                } else {
+                fakeUserName = name.split("/")[4];
+                conversationObject = name.split("_")[1];
+                }
+
+                //System.out.println(fakeUserName + " | " + conversationObject + " | " + id + " | " + indexMessages.get(name));
+
+                if (!userMessages.containsKey(fakeUserName)) {
+                    userMessages.put(fakeUserName, new HashMap<String, Map<Integer, Message>>());
+                }
+                if (!userMessages.get(fakeUserName).containsKey(conversationObject)) {
+                    userMessages.get(fakeUserName).put(conversationObject, new HashMap<Integer, Message>());
+                }
+                if (name.indexOf("/") == -1) {
+                    userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(name, new ArrayList<Message>()));
+                } else {
+                    userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(indexMessages.get(name), new ArrayList<Message>()));
+                }
+                
                     ArrayList<Integer> choices = new ArrayList<>();
                     node.get("choices").elements().forEachRemaining(choice -> {
                         choices.add(choice.asInt());
                         allChoices.add(choice.asInt());
                     });
-
-                    // Stocker dans un tableau intermédiaire les objets de dialogue, pour pouvoir les reparcourir en fin de boucle (une fois qu'on a fini le premier parcours total)
-                    // Puis pour chacun des choices, le récupérer par son choiceId, et vérifier si lui même a des choices, et vers quel message il pointe
-
+                   
                      dialogueMap.put(id, node);
                     }
 
@@ -127,18 +131,25 @@ public class MessageUtils {
                         ArrayList<Integer> choices2 = new ArrayList<>();
                         node2.get("choices").elements().forEachRemaining(choice -> {
                             choices2.add(choice.asInt());
-                        });
+                        }); 
 
-                        try {
+                        if (node2.has("false_choices")) {
+                            node2.get("false_choices").elements().forEachRemaining(choice -> {
+                                choices2.add(choice.asInt());
+                            });
+                        }
+
+                            String typeNode = node2.has("type") ? node2.get("type").asText() : null;
                             Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id2);
                             for (int choice : choices2) {
                                 currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
                             }
-                            if (!allChoices.contains(id2)){
+                            System.out.println(typeNode);
+
+                            if (typeNode.indexOf("Start") >= 0) {
                                 Discussion d = new Discussion(conversationObject, currentMessage);
                                 currentUser.getScript().add(d);
-                            }
-                        } catch (NullPointerException e) {}
+                            }    
                         } catch (ArrayIndexOutOfBoundsException e) {}
                     }
                 }
