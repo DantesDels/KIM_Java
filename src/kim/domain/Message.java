@@ -44,6 +44,10 @@ public class Message {
         return msg;
     }
 
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
     public List<Message> getReplies() {
         return messages;
     }

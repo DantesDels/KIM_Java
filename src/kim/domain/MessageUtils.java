@@ -17,12 +17,13 @@ import static java.lang.Integer.parseInt;
  * /*
  * id en.json != id .dialogue.json
  * id en.json == name .dialogue.json
+ * StartDialogueNode = no Message
  **/
 
 public class MessageUtils {
 
     // Dictionary for userMessages | jsonMainReader Parsing result
-    public static Map<String, Map<String, Map<Integer, Message>>> userMessages = new HashMap<>();
+    public static Map<String, Map<Integer, Message>> userMessages = new HashMap<>();
 
     // Dictionary for Chemistry level associated to FakeUser
     public static Map<FakeUser, Integer> chemistryDict = new HashMap<>();
@@ -65,6 +66,8 @@ public class MessageUtils {
                     }
                 }
 
+                // First reading to create all messages
+
                 rootNode = mapper.readTree(new File("./res/discussions_JSON/" + fakeUser + "Dialogue_rom.dialogue.json"));
                 Map<Integer, JsonNode> dialogueMap = new HashMap<>();
                 ArrayList<Integer> allChoices = new ArrayList<>();
@@ -78,29 +81,20 @@ public class MessageUtils {
                     continue;
                 }
 
-                String fakeUserName = null;
-                String conversationObject = null;
-
-                if (name.indexOf("/") == -1) {
-                    fakeUserName = fakeUser;
-                    conversationObject = name;
-                } else {
-                fakeUserName = name.split("/")[4];
-                conversationObject = name.split("_")[1];
-                }
 
                 //System.out.println(fakeUserName + " | " + conversationObject + " | " + id + " | " + indexMessages.get(name));
 
-                if (!userMessages.containsKey(fakeUserName)) {
-                    userMessages.put(fakeUserName, new HashMap<String, Map<Integer, Message>>());
+                if (!userMessages.containsKey(fakeUser)) {
+                    userMessages.put(fakeUser, new HashMap<Integer, Message>());
                 }
-                if (!userMessages.get(fakeUserName).containsKey(conversationObject)) {
-                    userMessages.get(fakeUserName).put(conversationObject, new HashMap<Integer, Message>());
-                }
+
                 if (name.indexOf("/") == -1) {
-                    userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(name, new ArrayList<Message>()));
+
+                // System.out.println("found for " + name);
+
+                    userMessages.get(fakeUser).put(id, new Message(name, new ArrayList<Message>()));
                 } else {
-                    userMessages.get(fakeUserName).get(conversationObject).put(id, new Message(indexMessages.get(name), new ArrayList<Message>()));
+                    userMessages.get(fakeUser).put(id, new Message(indexMessages.get(name), new ArrayList<Message>()));
                 }
                 
                     ArrayList<Integer> choices = new ArrayList<>();
@@ -120,37 +114,33 @@ public class MessageUtils {
                         if (nameNode == null) {
                             continue;
                         }
-
-                        try {
-                            String fakeUserName = nameNode.split("/")[4];
-                            String conversationObject = nameNode.split("_")[1];
+                        
+                        String conversationObject = nameNode.split("_").length > 1 ? nameNode.split("_")[1] : nameNode;
 
                         JsonNode node2 = entry.getValue();
                         int id2 = entry.getKey();
-
+                        Message currentMessage = userMessages.get(fakeUser).get(id2);
                         ArrayList<Integer> choices2 = new ArrayList<>();
+
                         node2.get("choices").elements().forEachRemaining(choice -> {
                             choices2.add(choice.asInt());
                         }); 
 
                         if (node2.has("false_choices")) {
+                            currentMessage.setMsg("boolean");
                             node2.get("false_choices").elements().forEachRemaining(choice -> {
                                 choices2.add(choice.asInt());
                             });
                         }
 
                             String typeNode = node2.has("type") ? node2.get("type").asText() : null;
-                            Message currentMessage = userMessages.get(fakeUserName).get(conversationObject).get(id2);
                             for (int choice : choices2) {
-                                currentMessage.getReplies().add(userMessages.get(fakeUserName).get(conversationObject).get(choice));
+                                currentMessage.getReplies().add(userMessages.get(fakeUser).get(choice));
                             }
-                            System.out.println(typeNode);
-
                             if (typeNode.indexOf("Start") >= 0) {
                                 Discussion d = new Discussion(conversationObject, currentMessage);
                                 currentUser.getScript().add(d);
                             }    
-                        } catch (ArrayIndexOutOfBoundsException e) {}
                     }
                 }
                 // Indiquer que s'il y a un choice, les afficher (si fakeUser parle), la possibilité de les selectionner (si User doit choisir une réponse),
@@ -158,6 +148,7 @@ public class MessageUtils {
 
             } catch (JsonProcessingException ex) {
         } catch (IOException ex) {
+            System.out.println("File not found ! " + ex.getMessage());
         }
     }
 

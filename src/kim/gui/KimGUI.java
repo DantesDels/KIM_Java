@@ -285,7 +285,7 @@ public class KimGUI extends JFrame {
                         lm.add(script.startMessage);
                     }
                     Message fakeMessage = new Message("", lm);
-                    UpdateReplies(fakeMessage, discussion, ReplyArea, panel, gbc);
+                    UpdateReplies(fakeMessage, discussion, ReplyArea, panel, gbc, chatFrame);
                 }
             }
         });
@@ -303,7 +303,7 @@ public class KimGUI extends JFrame {
      * @param element    the main panel
      * @param gbc        the layout constraints
      */
-    private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element, GridBagConstraints gbc) {
+    private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element, GridBagConstraints gbc, JFrame chatFrame) {
 
         ReplyArea.removeAll();
         ReplyArea.setLayout(new GridBagLayout());
@@ -316,20 +316,37 @@ public class KimGUI extends JFrame {
         int labelNumber = 1; // Initialiser le numéro de label
         for (Message reply : message.getReplies()) {
             replyGbc.gridy = gridy++;
-            JLabel label = new JLabel(labelNumber + ". " + reply.getMsg()); // Ajouter la numérotation
-            labelNumber++; // Incrémenter le numéro de label
-            if (reply.getReplies().isEmpty()) {
-                label.setText(labelNumber + ". " + reply.getMsg() + " [End.] ");
+            String text = null; 
+            if (reply == null) {
+                text = " [Chat Ended] ";
+            } else {
+                text = reply.getMsg();
             }
+
+            JLabel label = new JLabel(labelNumber + ". " + text); // Ajouter la numérotation
+            labelNumber++; // Incrémenter le numéro de label
+            label.setText(labelNumber + ". " +  text);
+            if (reply != null && !reply.getReplies().isEmpty()) {
             label.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
                     if (e.getClickCount() == 1) {
                         discussion.append("\n" + reply.getMsg());
-                        UpdateReplies(reply, discussion, ReplyArea, element, gbc);
+                            UpdateReplies(reply, discussion, ReplyArea, element, gbc, chatFrame);
                     }
                 }
             });
+            } else {
+                label.addMouseListener(new MouseAdapter() {
+                    public void mousePressed(MouseEvent e) {
+                        super.mousePressed(e);
+                        if (e.getClickCount() == 2) {
+                            chatFrame.dispose();
+                        }
+                    }
+                }); // Rendre le texte gris pour indiquer qu'il n'est pas cliquable
+            }
+
             ReplyArea.add(label, replyGbc);
         }
         element.revalidate();
