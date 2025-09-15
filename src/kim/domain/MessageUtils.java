@@ -146,7 +146,7 @@ public class MessageUtils {
                             node2.get("false_choices").elements().forEachRemaining(choice -> {
                                 falseChoices.add(userMessages.get(fakeUser).get(choice.asInt()));
                             });
-                            
+
                             currentMessage = new MessageCheckBool("boolean", boolName, trueChoices, falseChoices, booleanDict.get(fakeUser));
                         }
 
@@ -158,8 +158,11 @@ public class MessageUtils {
 
                             String typeNode = node2.has("type") ? node2.get("type").asText() : null;
                             for (int choice : choices2) {
+                                System.out.println("Linking " + id2 + " to " + choice + " for " + fakeUser);
+                            if (typeNode.indexOf("CheckBool") == -1 && typeNode.indexOf("SetBool") == -1) {    
                                 currentMessage.getReplies().add(userMessages.get(fakeUser).get(choice));
                             }
+                        }
                             if (typeNode.indexOf("Start") >= 0) {
                                 Discussion d = new Discussion(conversationObject, currentMessage);
                                 currentUser.getScript().add(d);

@@ -3,6 +3,8 @@ package kim.gui;
 import kim.domain.Discussion;
 import kim.domain.FakeUser;
 import kim.domain.Message;
+import kim.domain.MessageSetBool;
+import kim.domain.MessageCheckBool;
 import kim.domain.MessageUtils;
 
 import javax.swing.*;
@@ -24,11 +26,11 @@ public class KimGUI extends JFrame {
 
     /**
      * Loads a custom font from the specified path.
-     *
      * @param path the path to the font file
      * @param size the size of the font
      * @return the loaded font
      */
+
     private static Font loadCustomFont(String path, float size) {
         try {
             Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path));
@@ -59,6 +61,7 @@ public class KimGUI extends JFrame {
      *
      * @param fakeUsers List of fake users to be displayed in the interface.
      */
+
     private static void createAndShowGUI(List<FakeUser> fakeUsers) {
 
         String username = askUsername(JOptionPane.QUESTION_MESSAGE);
@@ -285,7 +288,7 @@ public class KimGUI extends JFrame {
                         lm.add(script.startMessage);
                     }
                     Message fakeMessage = new Message("", lm);
-                    UpdateReplies(fakeMessage, discussion, ReplyArea, panel, gbc, chatFrame);
+                    UpdateReplies(username,fakeMessage, discussion, ReplyArea, panel, gbc, chatFrame);
                 }
             }
         });
@@ -303,7 +306,7 @@ public class KimGUI extends JFrame {
      * @param element    the main panel
      * @param gbc        the layout constraints
      */
-    private static void UpdateReplies(Message message, JTextArea discussion, JPanel ReplyArea, JPanel element, GridBagConstraints gbc, JFrame chatFrame) {
+    private static void UpdateReplies(String username, Message message, JTextArea discussion, JPanel ReplyArea, JPanel element, GridBagConstraints gbc, JFrame chatFrame) {
 
         ReplyArea.removeAll();
         ReplyArea.setLayout(new GridBagLayout());
@@ -314,7 +317,24 @@ public class KimGUI extends JFrame {
 
         int gridy = 0;
         int labelNumber = 1; // Initialiser le numéro de label
-        for (Message reply : message.getReplies()) {
+        List<Message> replies = message.getReplies();
+        
+        if (message instanceof MessageSetBool) {
+            MessageUtils.booleanDict.get(username).put(((MessageSetBool) message).boolName, true);
+            System.out.println("Boolean " + ((MessageSetBool) message).boolName + " is now true");
+        }
+
+        if (message instanceof MessageCheckBool) {
+            boolean boolValue = MessageUtils.booleanDict.get(username).get(((MessageCheckBool) message).boolName);
+            if (boolValue) {
+                replies = ((MessageCheckBool) message).trueChoices;
+            } else {
+                replies = ((MessageCheckBool) message).falseChoices;
+            }
+            System.out.println("Boolean " + ((MessageCheckBool) message).boolName + " is " + boolValue);
+        }
+
+        for (Message reply : replies) {
             replyGbc.gridy = gridy++;
             String text = null; 
             if (reply == null) {
@@ -332,7 +352,7 @@ public class KimGUI extends JFrame {
                     super.mousePressed(e);
                     if (e.getClickCount() == 1) {
                         discussion.append("\n" + reply.getMsg());
-                            UpdateReplies(reply, discussion, ReplyArea, element, gbc, chatFrame);
+                        UpdateReplies(username, reply, discussion, ReplyArea, element, gbc, chatFrame);
                     }
                 }
             });
