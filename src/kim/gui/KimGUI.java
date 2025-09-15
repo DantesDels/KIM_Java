@@ -318,7 +318,18 @@ public class KimGUI extends JFrame {
         int gridy = 0;
         int labelNumber = 1; // Initialiser le numéro de label
         List<Message> replies = message.getReplies();
+
+        if (message instanceof MessageCheckBool) {
+            boolean boolValue = MessageUtils.booleanDict.get(username).get(((MessageCheckBool) message).boolName);
+            if (boolValue) {
+                replies = ((MessageCheckBool) message).trueChoices;
+            } else {
+                replies = ((MessageCheckBool) message).falseChoices;
+            }
+        }
         
+        System.out.println("Number of Replies: " + replies.size());
+
         if (message instanceof MessageSetBool) {
             MessageUtils.booleanDict.get(username).put(((MessageSetBool) message).boolName, true);
             System.out.println("Boolean " + ((MessageSetBool) message).boolName + " is now true");
@@ -331,7 +342,6 @@ public class KimGUI extends JFrame {
             } else {
                 replies = ((MessageCheckBool) message).falseChoices;
             }
-            System.out.println("Boolean " + ((MessageCheckBool) message).boolName + " is " + boolValue);
         }
 
         for (Message reply : replies) {
@@ -346,7 +356,7 @@ public class KimGUI extends JFrame {
             JLabel label = new JLabel(labelNumber + ". " + text); // Ajouter la numérotation
             labelNumber++; // Incrémenter le numéro de label
             label.setText(labelNumber + ". " +  text);
-            if (reply != null && !reply.getReplies().isEmpty()) {
+            if (reply != null) { // && !reply.getReplies().isEmpty()) {
             label.addMouseListener(new MouseAdapter() {
                 public void mousePressed(MouseEvent e) {
                     super.mousePressed(e);
@@ -356,6 +366,16 @@ public class KimGUI extends JFrame {
                     }
                 }
             });
+            // } else if (reply != null && reply.getReplies().isEmpty()) {
+            //     if (reply instanceof MessageCheckBool) {
+            //         boolean boolValue = MessageUtils.booleanDict.get(username).get(((MessageCheckBool) reply).boolName);
+            //         if (boolValue) {
+            //             discussion.append("\n" + reply.getMsg());
+            //             UpdateReplies(username, ((MessageCheckBool) reply).trueChoices, discussion, ReplyArea, element, gbc, chatFrame);
+            //         } else {
+            //             discussion.append("\n" + reply.getMsg());
+            //             UpdateReplies(username, ((MessageCheckBool) reply).falseChoices, discussion, ReplyArea, element, gbc, chatFrame);
+            //         }
             } else {
                 label.addMouseListener(new MouseAdapter() {
                     public void mousePressed(MouseEvent e) {
