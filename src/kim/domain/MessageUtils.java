@@ -26,10 +26,10 @@ public class MessageUtils {
     public static Map<String, Map<Integer, Message>> userMessages = new HashMap<>();
 
     // Dictionary for Chemistry level associated to FakeUser
-    public static Map<FakeUser, Integer> chemistryDict = new HashMap<>();
+    public static Map<String, Integer> chemistryDict = new HashMap<>();
 
     // Dictionary checking the Booleans associated to FakeUser
-    public static Map<FakeUser, Map<String, Boolean>> booleanDict = new HashMap<>();
+    public static Map<String, Map<String, Boolean>> booleanDict = new HashMap<>();
 
 
     public static void jsonMainReader(List<FakeUser> fakeUsers) {
@@ -58,6 +58,9 @@ public class MessageUtils {
 
             for (String fakeUser : fakeUsersUsername) {
                 
+                chemistryDict.put(fakeUser, 0);
+                booleanDict.put(fakeUser, new HashMap<>());
+
                 FakeUser currentUser = null;
                 for (FakeUser user : fakeUsers) {
                     if (user.getUsername().equals(fakeUser)) {
@@ -80,7 +83,6 @@ public class MessageUtils {
                 if (name == null) {
                     continue;
                 }
-
 
                 //System.out.println(fakeUserName + " | " + conversationObject + " | " + id + " | " + indexMessages.get(name));
 
@@ -132,6 +134,27 @@ public class MessageUtils {
                                 choices2.add(choice.asInt());
                             });
                         }
+
+                        if (node2.has("type") && node2.get("type").asText().indexOf("CheckBool") >= 0) {
+                            String boolName = node2.get("name").asText();
+                            List<Message> trueChoices = new ArrayList<>();
+                            List<Message> falseChoices = new ArrayList<>();
+
+                            node2.get("true_choices").elements().forEachRemaining(choice -> {
+                                trueChoices.add(userMessages.get(fakeUser).get(choice.asInt()));
+                            });
+                            node2.get("false_choices").elements().forEachRemaining(choice -> {
+                                falseChoices.add(userMessages.get(fakeUser).get(choice.asInt()));
+                            });
+                            
+                            currentMessage = new MessageCheckBool("boolean", boolName, trueChoices, falseChoices, booleanDict.get(fakeUser));
+                        }
+
+                        if (node2.get("type").asText().indexOf("SetBool") >= 0) {
+                            String boolName = node2.get("name").asText();
+                            currentMessage = new MessageSetBool("boolean", boolName, currentMessage.getReplies(), booleanDict.get(fakeUser));
+                        }
+
 
                             String typeNode = node2.has("type") ? node2.get("type").asText() : null;
                             for (int choice : choices2) {
